@@ -32,10 +32,14 @@
   .form-group textarea{min-height:70px;resize:vertical}
   .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
   .hidden{display:none !important}
-  .radio-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:9px 0;cursor:pointer}
+  .radio-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:10px 12px;cursor:pointer;border-radius:12px;border:1px solid var(--border);margin-bottom:8px}
   .radio-group input{width:auto}
+  .radio-group label.radio-clear{background:#E9F8EF;border-color:#BFE9CE;color:#2E9E5B}
+  .radio-group label.radio-cheat{background:#FBE9E7;border-color:#F3C4BD;color:#D9483A}
+  .radio-group label.radio-quota{background:#F1E8FB;border-color:#DBC4F3;color:#7C4FCB}
   .err{color:var(--error);font-size:12px;min-height:16px;margin:8px 0}
-  button{width:100%;padding:14px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer}
+  button{width:100%;padding:14px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  button:disabled{opacity:.7;cursor:not-allowed}
 
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100}
   .modal-overlay.hidden{display:none}
@@ -43,7 +47,9 @@
   .modal h3{font-size:20px;font-weight:700;margin-bottom:6px}
   .modal p.hint{color:var(--text-secondary);font-size:13px;margin:10px 0}
   .passcode-display{font-size:30px;font-weight:800;letter-spacing:4px;color:var(--accent-dark);background:var(--bg);border-radius:14px;padding:16px;margin:14px 0}
-  .no-display{font-size:14px;color:var(--text-secondary)}
+  .copy-btn{background:#1A1A1A !important;color:#fff !important;font-size:13px !important;padding:10px !important}
+  .spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,.25);border-top-color:#1A1A1A;border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -75,11 +81,11 @@
       <select id="cDistric"><option value="">— เลือก —</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
     </div>
     <div class="form-group">
-      <label>คะแนนของคุณ (เลือกได้ 1 ข้อ)</label>
+      <label>คะแนนของคุณได้มาจากวิธีใด</label>
       <div class="radio-group">
-        <label><input type="radio" name="scoreType" value="clear"> ได้คะแนนจากความสามารถ</label>
-        <label><input type="radio" name="scoreType" value="cheat"> ได้คะแนนจากการใช้เงินซื้อ</label>
-        <label><input type="radio" name="scoreType" value="quota"> ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก</label>
+        <label class="radio-clear"><input type="radio" name="scoreType" value="clear"> ได้คะแนนจากความสามารถ</label>
+        <label class="radio-cheat"><input type="radio" name="scoreType" value="cheat"> ได้คะแนนจากการใช้เงินซื้อ</label>
+        <label class="radio-quota"><input type="radio" name="scoreType" value="quota"> ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก</label>
       </div>
     </div>
     <div class="form-group"><label>หมายเหตุ (พิมพ์อิสระ)</label><textarea id="cNote"></textarea></div>
@@ -89,17 +95,17 @@
       <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลของคุณในครั้งถัดไป และในกรณีที่เจ้าหน้าที่รัฐผู้รับผิดชอบตรวจสอบต้องติดต่อสอบถาม</small>
     </div>
     <div class="err" id="cErr"></div>
-    <button onclick="submitCreate()">เพิ่มชื่อของฉัน</button>
+    <button id="createSubmitBtn" onclick="submitCreate()"><span id="createSubmitLabel">เพิ่มชื่อของฉัน</span></button>
   </div>
 </div>
 
 <div class="modal-overlay hidden" id="successModal">
   <div class="modal">
     <h3>เพิ่มชื่อสำเร็จ</h3>
-    <p class="no-display" id="successNo"></p>
     <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับเบอร์โทรของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
     <div class="passcode-display" id="successPasscode"></div>
-    <button onclick="location.href='index.html'">ไปหน้ารายชื่อ</button>
+    <button class="copy-btn" onclick="copyPasscode()" id="copyPasscodeBtn">📋 คัดลอกรหัสผ่าน</button>
+    <button onclick="location.href='index.html'">กลับหน้าแรก</button>
   </div>
 </div>
 
@@ -142,16 +148,30 @@ async function submitCreate() {
     phone
   };
 
+  createSubmitBtn.disabled = true;
+  createSubmitLabel.innerHTML = '<span class="spinner"></span>กำลังบันทึก...';
   try {
     const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
     const data = await res.json();
     if (!data.success) { cErr.textContent = data.error || 'บันทึกไม่สำเร็จ'; return; }
-    successNo.textContent = 'ลำดับที่ ' + data.no + ' ในระบบ';
     successPasscode.textContent = data.passcode;
     successModal.classList.remove('hidden');
   } catch (err) {
     cErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  } finally {
+    createSubmitBtn.disabled = false;
+    createSubmitLabel.textContent = 'เพิ่มชื่อของฉัน';
   }
+}
+
+function copyPasscode() {
+  const text = successPasscode.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    copyPasscodeBtn.textContent = '✅ คัดลอกแล้ว';
+    setTimeout(() => { copyPasscodeBtn.textContent = '📋 คัดลอกรหัสผ่าน'; }, 1800);
+  }).catch(() => {
+    copyPasscodeBtn.textContent = 'คัดลอกไม่สำเร็จ ลองกดค้างเพื่อคัดลอกเอง';
+  });
 }
 </script>
 </body>

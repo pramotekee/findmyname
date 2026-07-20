@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find My Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,700;1,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F4F2;
+    --surface:#FFFFFF;
+    --accent:#FFC93C;
+    --accent-dark:#E8B62E;
+    --text-primary:#1A1A1A;
+    --text-secondary:#7A7A7A;
+    --border:#E2E2E0;
+    --success:#2E9E5B;
+    --error:#E74C3C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text-primary);padding-bottom:80px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+  header{padding:28px 16px 16px;text-align:center}
+  header h1{font-style:italic;font-weight:800;font-size:34px;letter-spacing:-0.5px}
+  header p.sub{color:var(--text-secondary);font-size:13px;margin-top:4px}
+
+  /* ===== Reserved: multi-project pill switcher (dormant — see loadProjects() near bottom) ===== */
+  #projectPills{display:none;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  #projectPills .pill{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer}
+  #projectPills .pill.active{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+
+  #heroBanner{max-width:480px;margin:0 auto 16px;overflow:hidden;position:relative;aspect-ratio:2.2/1;border-radius:18px;display:none}
+  #bannerTrack{display:flex;height:100%;touch-action:pan-y}
+  #bannerTrack img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+
+  .search-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+  .search-box input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:15px;background:var(--bg)}
+  .filters{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+  .filters select{padding:10px 12px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:13px;background:var(--bg);color:var(--text-primary)}
+  .clear-filters{margin-top:10px;text-align:right}
+  .clear-filters button{background:none;border:none;color:var(--text-secondary);font-size:12px;text-decoration:underline;cursor:pointer;font-family:inherit}
+
+  #resultCount{font-size:13px;color:var(--text-secondary);margin-bottom:10px}
+
+  .name-list{display:flex;flex-direction:column;gap:10px}
+  .name-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .name-card .info{flex:1;min-width:0}
+  .name-card .fullname{font-weight:700;font-size:16px}
+  .name-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .name-card .tag{background:var(--bg);border-radius:999px;padding:3px 10px;font-size:11px;color:var(--text-secondary)}
+  .name-card .score-tag{display:inline-flex;align-items:center;gap:4px;background:#E9F8EF;color:var(--success);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;margin-top:6px}
+  .name-card .note{font-size:12px;color:var(--text-secondary);margin-top:6px;white-space:pre-wrap}
+  .name-card button.edit-btn{flex-shrink:0;background:var(--accent);border:none;color:#1A1A1A;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
+
+  .empty-state{text-align:center;color:var(--text-secondary);padding:40px 20px;font-size:14px}
+
+  .create-fab{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#1A1A1A;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:14px 26px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.25);white-space:nowrap}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:100}
+  .modal-overlay.hidden{display:none}
+  .modal{background:var(--surface);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:26px 22px 30px;max-height:88vh;overflow-y:auto}
+  @media(min-width:560px){.modal-overlay{align-items:center}.modal{border-radius:24px}}
+  .modal h3{font-size:20px;font-weight:700;margin-bottom:6px}
+  .modal p.hint{color:var(--text-secondary);font-size:13px;margin-bottom:16px}
+  .modal.center{text-align:center}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
+  .form-group textarea{min-height:70px;resize:vertical}
+  .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
+  .radio-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--text-primary);padding:9px 0;cursor:pointer}
+  .radio-group input{width:auto}
+  .hidden{display:none !important}
+  .err{color:var(--error);font-size:12px;min-height:16px;margin:6px 0}
+  .modal button{width:100%;padding:13px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;margin-top:6px}
+  .modal button.btn-secondary{background:var(--bg);color:var(--text-secondary);font-weight:600}
+  .passcode-display{font-size:30px;font-weight:800;letter-spacing:4px;color:var(--accent-dark);background:var(--bg);border-radius:14px;padding:16px;margin:14px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Find My Name</h1>
+  <p class="sub">โกงสอบ — ค้นหารายชื่อและแก้ไขข้อมูลของคุณ</p>
+  <!-- Reserved for future multi-project pill switcher, see loadProjects() -->
+  <div id="projectPills"></div>
+</header>
+
+<div class="wrap">
+
+  <div id="heroBanner"><div id="bannerTrack"></div></div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="พิมพ์ชื่อหรือนามสกุล...">
+    <div class="filters">
+      <select id="filterLetter"><option value="">ก-ฮ (ทั้งหมด)</option></select>
+      <select id="filterRole"><option value="">สายงาน (ทั้งหมด)</option></select>
+      <select id="filterRegion"><option value="">ภาค (ทั้งหมด)</option></select>
+      <select id="filterDistric"><option value="">เขต (ทั้งหมด)</option></select>
+      <select id="filterProvince" style="grid-column:1/-1"><option value="">จังหวัด (ทั้งหมด)</option></select>
+    </div>
+    <div class="clear-filters"><button onclick="resetFilters()">ล้างตัวกรองทั้งหมด</button></div>
+  </div>
+
+  <div id="resultCount"></div>
+  <div class="name-list" id="nameList"></div>
+
+</div>
+
+<a href="create.html" class="create-fab">+ ไม่พบชื่อฉัน เพิ่มชื่อ</a>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div class="modal-overlay hidden" id="loginModal">
+  <div class="modal">
+    <h3>ยืนยันตัวตน</h3>
+    <p class="hint">ชื่อนี้เคยถูกแก้ไขไปแล้ว กรุณากรอกเบอร์โทรและรหัสผ่านที่เคยได้รับตอนแก้ไขครั้งแรก</p>
+    <div class="form-group"><label>หมายเลขโทรศัพท์</label><input type="tel" id="loginPhone"></div>
+    <div class="form-group"><label>รหัสผ่าน (8 หลัก)</label><input type="text" id="loginPasscode"></div>
+    <div class="err" id="loginErr"></div>
+    <button onclick="submitLogin()">เข้าสู่ระบบ</button>
+    <button class="btn-secondary" onclick="closeModal('loginModal')">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay hidden" id="editModal">
+  <div class="modal">
+    <h3>แก้ไขข้อมูล</h3>
+    <p class="hint" id="editHint">ตรวจสอบชื่อ-นามสกุลของคุณ แก้ไขได้หากสะกดผิด แล้วกรอกข้อมูลที่เหลือให้ครบ</p>
+    <div class="form-group"><label>ชื่อจริง</label><input type="text" id="editFirstname"></div>
+    <div class="form-group"><label>นามสกุล</label><input type="text" id="editLastname"></div>
+    <div class="form-group">
+      <label>สายงาน</label>
+      <select id="editRole">
+        <option value="สายงานวิชาการ">สายงานวิชาการ</option>
+        <option value="สายงานทั่วไป">สายงานทั่วไป</option>
+        <option value="สายงานครูผู้ช่วย">สายงานครูผู้ช่วย</option>
+        <option value="สายงานครู">สายงานครู</option>
+        <option value="__other__">อื่นๆ</option>
+      </select>
+      <input type="text" id="editRoleOther" class="hidden" placeholder="ระบุสายงานของคุณ" style="margin-top:8px">
+    </div>
+    <div class="form-group"><label>จังหวัด</label><select id="editProvince"></select></div>
+    <div class="form-group"><label>ภาค</label><select id="editRegion"></select></div>
+    <div class="form-group"><label>เขต</label>
+      <select id="editDistric"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+    </div>
+    <div class="form-group">
+      <label>คะแนนของคุณ (เลือกได้ 1 ข้อ)</label>
+      <div class="radio-group">
+        <label><input type="radio" name="scoreType" value="clear"> ได้คะแนนจากความสามารถ</label>
+        <label><input type="radio" name="scoreType" value="cheat"> ได้คะแนนจากการใช้เงินซื้อ</label>
+        <label><input type="radio" name="scoreType" value="quota"> ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก</label>
+      </div>
+    </div>
+    <div class="form-group"><label>หมายเหตุ (พิมพ์อิสระ)</label><textarea id="editNote"></textarea></div>
+    <div class="form-group">
+      <label>หมายเลขโทรศัพท์</label>
+      <input type="tel" id="editPhone">
+      <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลของคุณในครั้งถัดไป และในกรณีที่เจ้าหน้าที่รัฐผู้รับผิดชอบตรวจสอบต้องติดต่อสอบถาม</small>
+    </div>
+    <div class="err" id="editErr"></div>
+    <button onclick="submitEdit()">ยืนยันบันทึกข้อมูล</button>
+    <button class="btn-secondary" onclick="closeModal('editModal')">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- ===== SUCCESS MODAL ===== -->
+<div class="modal-overlay hidden" id="successModal">
+  <div class="modal center">
+    <h3>บันทึกข้อมูลสำเร็จ</h3>
+    <div id="successPasscodeWrap" class="hidden">
+      <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับเบอร์โทรของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
+      <div class="passcode-display" id="successPasscode"></div>
+    </div>
+    <button onclick="closeModal('successModal'); location.reload();">เสร็จสิ้น</button>
+  </div>
+</div>
+
+<script>
+// ===================== CONFIG =====================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdJjKdDXSautMm402qTkwccQbN3etPvf-WfqWwQgzlW1sjMb-9uv_20xvufEoKTsCU/exec';
+
+const THAI_LETTERS = ['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ','พ','ฟ','ภ','ม','ย','ร','ล','ว','ศ','ษ','ส','ห','ฬ','อ','ฮ'];
+const REGIONS = ['เหนือ','กลาง','ตะวันออกเฉียงเหนือ(อีสาน)','ตะวันออก','ตะวันตก','ใต้'];
+const ROLES = ['สายงานวิชาการ','สายงานทั่วไป','สายงานครูผู้ช่วย','สายงานครู'];
+const PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
+
+let allRows = [];
+let pendingEditNo = null;   // "no" of the row currently being logged into / edited
+let currentAuth = null;     // { phone, passcode } once a returning user has logged in successfully
+let isFirstTimeClaim = false;
+
+// ===================== API HELPERS =====================
+async function apiGet(action, params) {
+  const query = new URLSearchParams({ action, ...(params||{}) });
+  const res = await fetch(SCRIPT_URL + '?' + query.toString());
+  return res.json();
+}
+async function apiPost(payload) {
+  const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+  return res.json();
+}
+
+// ===================== INIT =====================
+function populateSelect(el, values, placeholder) {
+  el.innerHTML = (placeholder ? '<option value="">'+placeholder+'</option>' : '') +
+    values.map(v => '<option value="'+v+'">'+v+'</option>').join('');
+}
+
+function init() {
+  populateSelect(filterLetter, THAI_LETTERS, 'ก-ฮ (ทั้งหมด)');
+  populateSelect(filterRole, ROLES, 'สายงาน (ทั้งหมด)');
+  populateSelect(filterRegion, REGIONS, 'ภาค (ทั้งหมด)');
+  populateSelect(filterDistric, ['1','2','3'], 'เขต (ทั้งหมด)');
+  populateSelect(filterProvince, PROVINCES, 'จังหวัด (ทั้งหมด)');
+
+  populateSelect(editProvince, PROVINCES);
+  populateSelect(editRegion, REGIONS);
+
+  loadNames();
+  loadBanners();
+  // loadProjects(); // reserved — uncomment when the "project" column + pill switcher are ready to go live
+
+  [searchInput, filterLetter, filterRole, filterRegion, filterDistric, filterProvince]
+    .forEach(el => el.addEventListener('input', applyFilters));
+
+  editRole.addEventListener('change', () => {
+    editRoleOther.classList.toggle('hidden', editRole.value !== '__other__');
+  });
+}
+
+// ===================== LIST + FILTER =====================
+async function loadNames() {
+  nameList.innerHTML = '<div class="empty-state">กำลังโหลดรายชื่อ...</div>';
+  try {
+    const data = await apiGet('list', {});
+    allRows = (data.success && data.rows) ? data.rows : [];
+    applyFilters();
+  } catch (err) {
+    nameList.innerHTML = '<div class="empty-state">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</div>';
+  }
+}
+
+function applyFilters() {
+  const q = searchInput.value.trim().toLowerCase();
+  const letter = filterLetter.value;
+  const role = filterRole.value;
+  const region = filterRegion.value;
+  const distric = filterDistric.value;
+  const province = filterProvince.value;
+
+  const filtered = allRows.filter(r => {
+    if (q) {
+      const full = (String(r.firstname)+' '+String(r.lastname)).toLowerCase();
+      if (!full.includes(q)) return false;
+    }
+    if (letter && !String(r.firstname).startsWith(letter)) return false;
+    if (role && r.role !== role) return false;
+    if (region && r.region !== region) return false;
+    if (distric && String(r.distric) !== distric) return false;
+    if (province && r.province !== province) return false;
+    return true;
+  });
+
+  renderList(filtered);
+}
+
+function resetFilters() {
+  searchInput.value = '';
+  filterLetter.value = '';
+  filterRole.value = '';
+  filterRegion.value = '';
+  filterDistric.value = '';
+  filterProvince.value = '';
+  applyFilters();
+}
+
+function scoreLabel(row) {
+  if (row.clear) return '✅ ได้คะแนนจากความสามารถ';
+  if (row.cheat) return '✅ ได้คะแนนจากการใช้เงินซื้อ';
+  if (row.quota) return '✅ ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก';
+  return '';
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderList(rows) {
+  resultCount.textContent = 'พบ ' + rows.length + ' รายชื่อ';
+  if (rows.length === 0) {
+    nameList.innerHTML = '<div class="empty-state">ไม่พบรายชื่อที่ตรงกับเงื่อนไข ลองปรับตัวกรองดูนะ</div>';
+    return;
+  }
+  nameList.innerHTML = rows.map(r => {
+    const tags = [r.role, r.province, r.region, r.distric ? ('เขต '+r.distric) : '']
+      .filter(Boolean).map(t => '<span class="tag">'+esc(t)+'</span>').join('');
+    const score = scoreLabel(r);
+    return '<div class="name-card">' +
+      '<div class="info">' +
+        '<div class="fullname">'+esc(r.firstname)+' '+esc(r.lastname)+'</div>' +
+        (tags ? '<div class="tags">'+tags+'</div>' : '') +
+        (score ? '<div class="score-tag">'+score+'</div>' : '') +
+        (r.note ? '<div class="note">'+esc(r.note)+'</div>' : '') +
+      '</div>' +
+      '<button class="edit-btn" onclick="handleEditClick(\''+esc(r.no)+'\')">แก้ไข</button>' +
+    '</div>';
+  }).join('');
+}
+
+// ===================== HERO BANNER =====================
+let bannerCount = 0, trackPosition = 0, loopWidth = 0, isDragging = false, dragStartX = 0, dragStartPosition = 0, dragTraveled = 0, lastFrameTime = null;
+const BANNER_SPEED_PX_PER_SEC = 40;
+
+async function loadBanners() {
+  try {
+    const data = await apiGet('getBanners', {});
+    if (data.success && data.banners && data.banners.length > 0) {
+      renderBanners(data.banners);
+      heroBanner.style.display = 'block';
+    }
+  } catch (err) { /* decorative — fail silently */ }
+}
+
+function renderBanners(banners) {
+  bannerCount = banners.length;
+  const slides = bannerCount > 1 ? banners.concat(banners) : banners;
+  bannerTrack.innerHTML = slides.map(b => {
+    const clickable = b.link_url ? 'cursor:pointer' : 'cursor:default';
+    return '<div style="flex:0 0 100%;height:100%;'+clickable+'" data-link="'+esc(b.link_url||'')+'">' +
+      '<img src="'+esc(b.image_url)+'" draggable="false"></div>';
+  }).join('');
+  trackPosition = 0;
+  bannerTrack.style.transform = 'translateX(0px)';
+  attachBannerClicks();
+  setupBannerDrag();
+  if (bannerCount > 1) {
+    heroBanner.style.cursor = 'grab';
+    lastFrameTime = null;
+    requestAnimationFrame(bannerFrame);
+  }
+}
+
+function attachBannerClicks() {
+  bannerTrack.querySelectorAll('div[data-link]').forEach(slide => {
+    slide.addEventListener('click', () => {
+      if (dragTraveled > 5) return;
+      const link = slide.getAttribute('data-link');
+      if (link) window.open(link, '_blank');
+    });
+  });
+}
+
+function bannerFrame(timestamp) {
+  if (bannerCount <= 1) return;
+  if (lastFrameTime === null) lastFrameTime = timestamp;
+  const dt = (timestamp - lastFrameTime) / 1000;
+  lastFrameTime = timestamp;
+  if (!isDragging) {
+    loopWidth = bannerTrack.scrollWidth / 2;
+    trackPosition -= BANNER_SPEED_PX_PER_SEC * dt;
+    if (trackPosition <= -loopWidth) trackPosition += loopWidth;
+    bannerTrack.style.transform = 'translateX(' + trackPosition + 'px)';
+  }
+  requestAnimationFrame(bannerFrame);
+}
+
+function setupBannerDrag() {
+  const onDown = (clientX) => {
+    if (bannerCount <= 1) return;
+    isDragging = true; dragTraveled = 0; dragStartX = clientX; dragStartPosition = trackPosition;
+    heroBanner.style.cursor = 'grabbing';
+  };
+  const onMove = (clientX) => {
+    if (!isDragging) return;
+    dragTraveled = Math.abs(clientX - dragStartX);
+    trackPosition = dragStartPosition + (clientX - dragStartX);
+    bannerTrack.style.transform = 'translateX(' + trackPosition + 'px)';
+  };
+  const onUp = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    heroBanner.style.cursor = 'grab';
+    loopWidth = bannerTrack.scrollWidth / 2;
+    if (loopWidth > 0) {
+      trackPosition = trackPosition % loopWidth;
+      if (trackPosition > 0) trackPosition -= loopWidth;
+    }
+  };
+  bannerTrack.addEventListener('touchstart', e => onDown(e.touches[0].clientX), { passive: true });
+  bannerTrack.addEventListener('touchmove', e => onMove(e.touches[0].clientX), { passive: true });
+  bannerTrack.addEventListener('touchend', onUp);
+  bannerTrack.addEventListener('mousedown', e => { e.preventDefault(); onDown(e.clientX); });
+  window.addEventListener('mousemove', e => onMove(e.clientX));
+  window.addEventListener('mouseup', onUp);
+}
+
+// ===================== EDIT / LOGIN FLOW =====================
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function handleEditClick(no) {
+  const row = allRows.find(r => String(r.no) === String(no));
+  if (!row) return;
+  pendingEditNo = no;
+  currentAuth = null;
+
+  if (row.hasPasscode) {
+    // returning user — must verify phone + passcode first
+    loginErr.textContent = '';
+    loginPhone.value = '';
+    loginPasscode.value = '';
+    openModal('loginModal');
+  } else {
+    // first-time claim — open the edit form directly, no auth needed
+    isFirstTimeClaim = true;
+    openEditForm({
+      no: row.no, firstname: row.firstname, lastname: row.lastname,
+      role: '', region: '', distric: '', province: '',
+      clear: false, cheat: false, quota: false, note: '', phone: ''
+    });
+    editHint.textContent = 'ยังไม่มีใครแก้ไขชื่อนี้มาก่อน — ตรวจสอบชื่อ-นามสกุลด้านล่าง (แก้ไขได้หากสะกดผิด) แล้วกรอกข้อมูลที่เหลือให้ครบ';
+  }
+}
+
+async function submitLogin() {
+  loginErr.textContent = '';
+  const phone = loginPhone.value.trim();
+  const passcode = loginPasscode.value.trim();
+  if (!phone || !passcode) { loginErr.textContent = 'กรุณากรอกเบอร์โทรและรหัสผ่านให้ครบ'; return; }
+
+  try {
+    const data = await apiPost({ action: 'login', no: pendingEditNo, phone, passcode });
+    if (!data.success) { loginErr.textContent = data.error || 'เข้าสู่ระบบไม่สำเร็จ'; return; }
+    currentAuth = { phone, passcode };
+    isFirstTimeClaim = false;
+    closeModal('loginModal');
+    openEditForm(data.data);
+    editHint.textContent = 'แก้ไขข้อมูลของคุณได้เลย';
+  } catch (err) {
+    loginErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  }
+}
+
+function openEditForm(row) {
+  editFirstname.value = row.firstname || '';
+  editLastname.value = row.lastname || '';
+
+  if (row.role && !ROLES.includes(row.role)) {
+    editRole.value = '__other__';
+    editRoleOther.classList.remove('hidden');
+    editRoleOther.value = row.role;
+  } else {
+    editRole.value = row.role || '';
+    editRoleOther.classList.add('hidden');
+    editRoleOther.value = '';
+  }
+
+  editProvince.value = row.province || '';
+  editRegion.value = row.region || '';
+  editDistric.value = row.distric || '1';
+
+  document.querySelectorAll('input[name=scoreType]').forEach(r => {
+    r.checked = (r.value === 'clear' && row.clear) || (r.value === 'cheat' && row.cheat) || (r.value === 'quota' && row.quota);
+  });
+
+  editNote.value = row.note || '';
+  editPhone.value = row.phone || '';
+  editErr.textContent = '';
+  openModal('editModal');
+}
+
+async function submitEdit() {
+  editErr.textContent = '';
+  const firstname = editFirstname.value.trim();
+  const lastname = editLastname.value.trim();
+  const phone = editPhone.value.trim();
+  if (!firstname || !lastname) { editErr.textContent = 'กรุณากรอกชื่อและนามสกุล'; return; }
+  if (!phone) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
+
+  const role = editRole.value === '__other__' ? editRoleOther.value.trim() : editRole.value;
+  const scoreType = (document.querySelector('input[name=scoreType]:checked') || {}).value || '';
+
+  const payload = {
+    action: 'updateRow',
+    no: pendingEditNo,
+    firstname, lastname, role,
+    region: editRegion.value,
+    distric: editDistric.value,
+    province: editProvince.value,
+    scoreType,
+    note: editNote.value,
+    phone
+  };
+  if (currentAuth) { payload.phone = currentAuth.phone; payload.passcode = currentAuth.passcode; }
+
+  try {
+    const data = await apiPost(payload);
+    if (!data.success) { editErr.textContent = data.error || 'บันทึกไม่สำเร็จ'; return; }
+    closeModal('editModal');
+    if (data.passcode) {
+      successPasscodeWrap.classList.remove('hidden');
+      successPasscode.textContent = data.passcode;
+    } else {
+      successPasscodeWrap.classList.add('hidden');
+    }
+    openModal('successModal');
+  } catch (err) {
+    editErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  }
+}
+
+// ===================== RESERVED: multi-project pill switcher =====================
+// Not active yet. Once you add a "project" column to the "name" sheet and
+// fill it in, uncomment loadProjects() in init() above — this will start
+// rendering pills automatically, no other change needed.
+/*
+async function loadProjects() {
+  try {
+    const data = await apiGet('getProjects', {});
+    if (data.success && data.projects && data.projects.length > 1) {
+      projectPills.style.display = 'flex';
+      projectPills.innerHTML = data.projects.map(p =>
+        '<div class="pill" onclick="selectProject(\''+esc(p)+'\')">'+esc(p)+'</div>'
+      ).join('');
+    }
+  } catch (err) { }
+}
+function selectProject(p) {
+  // filter allRows by a "project" field once it's returned from listNames(),
+  // or refetch with ?project=... — wire this up when the feature goes live
+}
+*/
+
+init();
+</script>
+</body>
+</html>

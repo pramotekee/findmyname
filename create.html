@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find My Name — เพิ่มชื่อของคุณ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,700;1,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F4F2;
+    --surface:#FFFFFF;
+    --accent:#FFC93C;
+    --accent-dark:#E8B62E;
+    --text-primary:#1A1A1A;
+    --text-secondary:#7A7A7A;
+    --border:#E2E2E0;
+    --error:#E74C3C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text-primary);padding:24px 16px 60px}
+  .wrap{max-width:480px;margin:0 auto}
+  a.back{display:inline-block;color:var(--text-secondary);font-size:13px;text-decoration:none;margin-bottom:14px}
+  header{text-align:center;margin-bottom:18px}
+  header h1{font-style:italic;font-weight:800;font-size:28px}
+  header p{color:var(--text-secondary);font-size:13px;margin-top:4px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px}
+  .form-group{margin-bottom:16px}
+  .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
+  .form-group label .required{color:var(--error);margin-left:2px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
+  .form-group textarea{min-height:70px;resize:vertical}
+  .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
+  .hidden{display:none !important}
+  .radio-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:9px 0;cursor:pointer}
+  .radio-group input{width:auto}
+  .err{color:var(--error);font-size:12px;min-height:16px;margin:8px 0}
+  button{width:100%;padding:14px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100}
+  .modal-overlay.hidden{display:none}
+  .modal{background:var(--surface);width:calc(100% - 32px);max-width:420px;border-radius:24px;padding:26px 22px 30px;text-align:center}
+  .modal h3{font-size:20px;font-weight:700;margin-bottom:6px}
+  .modal p.hint{color:var(--text-secondary);font-size:13px;margin:10px 0}
+  .passcode-display{font-size:30px;font-weight:800;letter-spacing:4px;color:var(--accent-dark);background:var(--bg);border-radius:14px;padding:16px;margin:14px 0}
+  .no-display{font-size:14px;color:var(--text-secondary)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← กลับไปหน้ารายชื่อ</a>
+  <header>
+    <h1>Find My Name</h1>
+    <p>ไม่พบชื่อของคุณในลิสต์? เพิ่มเข้าไปได้เลย</p>
+  </header>
+
+  <div class="card">
+    <div class="form-group"><label>ชื่อจริง<span class="required">*</span></label><input type="text" id="cFirstname"></div>
+    <div class="form-group"><label>นามสกุล<span class="required">*</span></label><input type="text" id="cLastname"></div>
+    <div class="form-group">
+      <label>สายงาน</label>
+      <select id="cRole">
+        <option value="">— เลือก —</option>
+        <option value="สายงานวิชาการ">สายงานวิชาการ</option>
+        <option value="สายงานทั่วไป">สายงานทั่วไป</option>
+        <option value="สายงานครูผู้ช่วย">สายงานครูผู้ช่วย</option>
+        <option value="สายงานครู">สายงานครู</option>
+        <option value="__other__">อื่นๆ</option>
+      </select>
+      <input type="text" id="cRoleOther" class="hidden" placeholder="ระบุสายงานของคุณ" style="margin-top:8px">
+    </div>
+    <div class="form-group"><label>จังหวัด</label><select id="cProvince"></select></div>
+    <div class="form-group"><label>ภาค</label><select id="cRegion"></select></div>
+    <div class="form-group"><label>เขต</label>
+      <select id="cDistric"><option value="">— เลือก —</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+    </div>
+    <div class="form-group">
+      <label>คะแนนของคุณ (เลือกได้ 1 ข้อ)</label>
+      <div class="radio-group">
+        <label><input type="radio" name="scoreType" value="clear"> ได้คะแนนจากความสามารถ</label>
+        <label><input type="radio" name="scoreType" value="cheat"> ได้คะแนนจากการใช้เงินซื้อ</label>
+        <label><input type="radio" name="scoreType" value="quota"> ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก</label>
+      </div>
+    </div>
+    <div class="form-group"><label>หมายเหตุ (พิมพ์อิสระ)</label><textarea id="cNote"></textarea></div>
+    <div class="form-group">
+      <label>หมายเลขโทรศัพท์<span class="required">*</span></label>
+      <input type="tel" id="cPhone">
+      <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลของคุณในครั้งถัดไป และในกรณีที่เจ้าหน้าที่รัฐผู้รับผิดชอบตรวจสอบต้องติดต่อสอบถาม</small>
+    </div>
+    <div class="err" id="cErr"></div>
+    <button onclick="submitCreate()">เพิ่มชื่อของฉัน</button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="successModal">
+  <div class="modal">
+    <h3>เพิ่มชื่อสำเร็จ</h3>
+    <p class="no-display" id="successNo"></p>
+    <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับเบอร์โทรของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
+    <div class="passcode-display" id="successPasscode"></div>
+    <button onclick="location.href='index.html'">ไปหน้ารายชื่อ</button>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdJjKdDXSautMm402qTkwccQbN3etPvf-WfqWwQgzlW1sjMb-9uv_20xvufEoKTsCU/exec';
+
+const REGIONS = ['เหนือ','กลาง','ตะวันออกเฉียงเหนือ(อีสาน)','ตะวันออก','ตะวันตก','ใต้'];
+const PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
+
+function populateSelect(el, values, placeholder) {
+  el.innerHTML = (placeholder ? '<option value="">'+placeholder+'</option>' : '') +
+    values.map(v => '<option value="'+v+'">'+v+'</option>').join('');
+}
+populateSelect(cProvince, PROVINCES, '— เลือก —');
+populateSelect(cRegion, REGIONS, '— เลือก —');
+
+cRole.addEventListener('change', () => {
+  cRoleOther.classList.toggle('hidden', cRole.value !== '__other__');
+});
+
+async function submitCreate() {
+  cErr.textContent = '';
+  const firstname = cFirstname.value.trim();
+  const lastname = cLastname.value.trim();
+  const phone = cPhone.value.trim();
+  if (!firstname || !lastname) { cErr.textContent = 'กรุณากรอกชื่อและนามสกุล'; return; }
+  if (!phone) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
+
+  const role = cRole.value === '__other__' ? cRoleOther.value.trim() : cRole.value;
+  const scoreType = (document.querySelector('input[name=scoreType]:checked') || {}).value || '';
+
+  const payload = {
+    action: 'createRow',
+    firstname, lastname, role,
+    region: cRegion.value,
+    distric: cDistric.value,
+    province: cProvince.value,
+    scoreType,
+    note: cNote.value,
+    phone
+  };
+
+  try {
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (!data.success) { cErr.textContent = data.error || 'บันทึกไม่สำเร็จ'; return; }
+    successNo.textContent = 'ลำดับที่ ' + data.no + ' ในระบบ';
+    successPasscode.textContent = data.passcode;
+    successModal.classList.remove('hidden');
+  } catch (err) {
+    cErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  }
+}
+</script>
+</body>
+</html>

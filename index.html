@@ -19,21 +19,32 @@
     --error:#E74C3C;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text-primary);padding-bottom:80px}
+  body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text-primary)}
   .wrap{max-width:760px;margin:0 auto;padding:0 16px}
 
-  header{padding:28px 16px 16px;text-align:center}
-  header h1{font-style:italic;font-weight:800;font-size:34px;letter-spacing:-0.5px}
-  header p.sub{color:var(--text-secondary);font-size:13px;margin-top:4px}
+  .top-zone{background:var(--accent)}
+  header{padding:28px 16px 20px;text-align:center}
+  header h1{font-style:italic;font-weight:800;font-size:34px;letter-spacing:-0.5px;color:#1A1A1A}
+  header p.sub{color:#1A1A1A;font-size:13px;margin-top:4px}
 
   /* ===== Reserved: multi-project pill switcher (dormant — see loadProjects() near bottom) ===== */
   #projectPills{display:none;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
   #projectPills .pill{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer}
   #projectPills .pill.active{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
 
-  #heroBanner{max-width:480px;margin:0 auto 16px;overflow:hidden;position:relative;aspect-ratio:2.2/1;border-radius:18px;display:none}
+  #heroBanner{max-width:480px;margin:0 auto;overflow:hidden;position:relative;aspect-ratio:2.2/1;border-radius:20px;display:none}
   #bannerTrack{display:flex;height:100%;touch-action:pan-y}
-  #bannerTrack img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+  #bannerTrack img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;border-radius:20px}
+
+  /* ===== Usage instructions ===== */
+  .instructions{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin:16px 0;display:flex;flex-direction:column;gap:12px}
+  .instructions .step{display:flex;align-items:flex-start;gap:12px}
+  .instructions .step-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#1A1A1A;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .instructions .step-text{font-size:13px;line-height:1.6}
+  .instructions .step-text b{font-weight:700}
+  .instructions .inline-create-btn{display:inline-block;margin-top:6px;background:var(--accent);color:#1A1A1A;text-decoration:none;font-weight:700;font-size:13px;padding:8px 16px;border-radius:10px}
+  .instructions .inline-tag{display:inline-block;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px}
+  .instructions .inline-tag.blue{background:#3E9AE8;color:#fff}
 
   .search-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
   .search-box input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:15px;background:var(--bg)}
@@ -44,53 +55,86 @@
 
   #resultCount{font-size:13px;color:var(--text-secondary);margin-bottom:10px}
 
-  .name-list{display:flex;flex-direction:column;gap:10px}
-  .name-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .name-card .info{flex:1;min-width:0}
-  .name-card .fullname{font-weight:700;font-size:16px}
-  .name-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .name-list{display:flex;flex-direction:column;gap:10px;padding-bottom:24px}
+  .name-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+  .name-card .card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .name-card .fullname{font-weight:700;font-size:16px;min-width:0}
+  .name-card .card-actions{flex-shrink:0;display:flex;gap:6px}
+  .name-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .name-card .tag{background:var(--bg);border-radius:999px;padding:3px 10px;font-size:11px;color:var(--text-secondary)}
-  .name-card .score-tag{display:inline-flex;align-items:center;gap:4px;background:#E9F8EF;color:var(--success);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;margin-top:6px}
-  .name-card .note{font-size:12px;color:var(--text-secondary);margin-top:6px;white-space:pre-wrap}
-  .name-card button.edit-btn{flex-shrink:0;background:var(--accent);border:none;color:#1A1A1A;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
+  .name-card .score-tag{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;margin-top:8px}
+  .name-card .score-tag.score-clear{background:#E9F8EF;color:#2E9E5B}
+  .name-card .score-tag.score-cheat{background:#FBE9E7;color:#D9483A}
+  .name-card .score-tag.score-quota{background:#F1E8FB;color:#7C4FCB}
+  .name-card button.edit-btn,.name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
+  .name-card button.edit-btn{background:var(--accent);color:#1A1A1A}
+  .name-card button.note-btn{background:#3E9AE8;color:#fff}
 
   .empty-state{text-align:center;color:var(--text-secondary);padding:40px 20px;font-size:14px}
 
-  .create-fab{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#1A1A1A;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:14px 26px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.25);white-space:nowrap}
-
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:100}
   .modal-overlay.hidden{display:none}
-  .modal{background:var(--surface);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:26px 22px 30px;max-height:88vh;overflow-y:auto}
+  .modal{background:var(--surface);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:26px 22px 30px;max-height:88vh;overflow-y:auto;position:relative}
   @media(min-width:560px){.modal-overlay{align-items:center}.modal{border-radius:24px}}
   .modal h3{font-size:20px;font-weight:700;margin-bottom:6px}
   .modal p.hint{color:var(--text-secondary);font-size:13px;margin-bottom:16px}
   .modal.center{text-align:center}
+  .modal .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:20px;color:var(--text-secondary);cursor:pointer;padding:4px;line-height:1;width:auto}
   .form-group{margin-bottom:14px}
   .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
   .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
   .form-group textarea{min-height:70px;resize:vertical}
   .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
-  .radio-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--text-primary);padding:9px 0;cursor:pointer}
+  .radio-group label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:10px 12px;cursor:pointer;border-radius:12px;border:1px solid var(--border);margin-bottom:8px}
   .radio-group input{width:auto}
+  .radio-group label.radio-clear{background:#E9F8EF;border-color:#BFE9CE;color:#2E9E5B}
+  .radio-group label.radio-cheat{background:#FBE9E7;border-color:#F3C4BD;color:#D9483A}
+  .radio-group label.radio-quota{background:#F1E8FB;border-color:#DBC4F3;color:#7C4FCB}
   .hidden{display:none !important}
   .err{color:var(--error);font-size:12px;min-height:16px;margin:6px 0}
-  .modal button{width:100%;padding:13px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;margin-top:6px}
+  .modal button{width:100%;padding:13px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
   .modal button.btn-secondary{background:var(--bg);color:var(--text-secondary);font-weight:600}
+  .modal button:disabled{opacity:.7;cursor:not-allowed}
   .passcode-display{font-size:30px;font-weight:800;letter-spacing:4px;color:var(--accent-dark);background:var(--bg);border-radius:14px;padding:16px;margin:14px 0}
+  .copy-btn{background:#1A1A1A !important;color:#fff !important;font-size:13px !important;padding:10px !important}
+
+  .spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,.25);border-top-color:#1A1A1A;border-radius:50%;animation:spin .7s linear infinite}
+  .spinner.light{border:2px solid rgba(255,255,255,.35);border-top-color:#fff}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Find My Name</h1>
-  <p class="sub">โกงสอบ — ค้นหารายชื่อและแก้ไขข้อมูลของคุณ</p>
-  <!-- Reserved for future multi-project pill switcher, see loadProjects() -->
-  <div id="projectPills"></div>
-</header>
+<div class="top-zone">
+  <header>
+    <h1>Find My Name</h1>
+    <p class="sub">พลังคนไทยร่วมกันจับตา ตรวจสอบ เปิดโปง สังคมไทยไม่ทนต่อการทุจริต</p>
+    <!-- Reserved for future multi-project pill switcher, see loadProjects() -->
+    <div id="projectPills"></div>
+  </header>
+  <div class="wrap">
+    <div id="heroBanner"><div id="bannerTrack"></div></div>
+  </div>
+</div>
 
 <div class="wrap">
 
-  <div id="heroBanner"><div id="bannerTrack"></div></div>
+  <div class="instructions">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><b>หากคุณไม่พบชื่อตัวเอง</b> และอยากร่วมเผยแพร่ชื่อสกุลและข้อมูลต่างๆ สามารถกดสร้างชื่อได้ที่<br>
+        <a class="inline-create-btn" href="create.html">+ Create</a>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><b>หากคุณพบชื่อตัวเอง แต่มีจุดผิด</b> และอยากแก้ไข เพิ่มข้อมูลต่างๆ สามารถกดแก้ไขได้ที่ <span class="inline-tag">Edit</span></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><b>หากคุณพบชื่อตัวเอง และไม่มีจุดผิด</b> และอยากเพิ่มข้อมูลต่างๆ สามารถกดแก้ไขได้ที่ <span class="inline-tag">Edit</span></div>
+    </div>
+  </div>
 
   <div class="search-box">
     <input type="text" id="searchInput" placeholder="พิมพ์ชื่อหรือนามสกุล...">
@@ -108,8 +152,6 @@
   <div class="name-list" id="nameList"></div>
 
 </div>
-
-<a href="create.html" class="create-fab">+ ไม่พบชื่อฉัน เพิ่มชื่อ</a>
 
 <!-- ===== LOGIN MODAL ===== -->
 <div class="modal-overlay hidden" id="loginModal">
@@ -148,11 +190,11 @@
       <select id="editDistric"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
     </div>
     <div class="form-group">
-      <label>คะแนนของคุณ (เลือกได้ 1 ข้อ)</label>
+      <label>คะแนนของคุณได้มาจากวิธีใด</label>
       <div class="radio-group">
-        <label><input type="radio" name="scoreType" value="clear"> ได้คะแนนจากความสามารถ</label>
-        <label><input type="radio" name="scoreType" value="cheat"> ได้คะแนนจากการใช้เงินซื้อ</label>
-        <label><input type="radio" name="scoreType" value="quota"> ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก</label>
+        <label class="radio-clear"><input type="radio" name="scoreType" value="clear"> ได้คะแนนจากความสามารถ</label>
+        <label class="radio-cheat"><input type="radio" name="scoreType" value="cheat"> ได้คะแนนจากการใช้เงินซื้อ</label>
+        <label class="radio-quota"><input type="radio" name="scoreType" value="quota"> ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก</label>
       </div>
     </div>
     <div class="form-group"><label>หมายเหตุ (พิมพ์อิสระ)</label><textarea id="editNote"></textarea></div>
@@ -162,8 +204,17 @@
       <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลของคุณในครั้งถัดไป และในกรณีที่เจ้าหน้าที่รัฐผู้รับผิดชอบตรวจสอบต้องติดต่อสอบถาม</small>
     </div>
     <div class="err" id="editErr"></div>
-    <button onclick="submitEdit()">ยืนยันบันทึกข้อมูล</button>
+    <button id="editSubmitBtn" onclick="submitEdit()"><span id="editSubmitLabel">ยืนยันบันทึกข้อมูล</span></button>
     <button class="btn-secondary" onclick="closeModal('editModal')">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- ===== NOTE MODAL ===== -->
+<div class="modal-overlay hidden" id="noteModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('noteModal')">✕</button>
+    <h3>บันทึกข้อความ</h3>
+    <p class="hint" id="noteModalBody" style="white-space:pre-wrap;color:var(--text-primary)"></p>
   </div>
 </div>
 
@@ -174,8 +225,9 @@
     <div id="successPasscodeWrap" class="hidden">
       <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับเบอร์โทรของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
       <div class="passcode-display" id="successPasscode"></div>
+      <button class="copy-btn" onclick="copyPasscode()" id="copyPasscodeBtn">📋 คัดลอกรหัสผ่าน</button>
     </div>
-    <button onclick="closeModal('successModal'); location.reload();">เสร็จสิ้น</button>
+    <button onclick="closeModal('successModal'); location.reload();">กลับหน้าแรก</button>
   </div>
 </div>
 
@@ -289,6 +341,16 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// Accepts either a direct image URL or a Google Drive share link
+// (e.g. https://drive.google.com/file/d/XXXX/view) and normalizes the
+// latter into a format <img> can actually render.
+function normalizeImageUrl(url) {
+  if (!url) return '';
+  const m = String(url).match(/\/d\/([a-zA-Z0-9_-]+)/) || String(url).match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/uc?export=view&id=' + m[1];
+  return url;
+}
+
 function renderList(rows) {
   resultCount.textContent = 'พบ ' + rows.length + ' รายชื่อ';
   if (rows.length === 0) {
@@ -298,17 +360,26 @@ function renderList(rows) {
   nameList.innerHTML = rows.map(r => {
     const tags = [r.role, r.province, r.region, r.distric ? ('เขต '+r.distric) : '']
       .filter(Boolean).map(t => '<span class="tag">'+esc(t)+'</span>').join('');
+    const scoreClass = r.clear ? 'score-clear' : (r.cheat ? 'score-cheat' : (r.quota ? 'score-quota' : ''));
     const score = scoreLabel(r);
     return '<div class="name-card">' +
-      '<div class="info">' +
+      '<div class="card-top">' +
         '<div class="fullname">'+esc(r.firstname)+' '+esc(r.lastname)+'</div>' +
-        (tags ? '<div class="tags">'+tags+'</div>' : '') +
-        (score ? '<div class="score-tag">'+score+'</div>' : '') +
-        (r.note ? '<div class="note">'+esc(r.note)+'</div>' : '') +
+        '<div class="card-actions">' +
+          '<button class="edit-btn" onclick="handleEditClick(\''+esc(r.no)+'\')">Edit</button>' +
+          '<button class="note-btn" onclick="handleNoteClick(\''+esc(r.no)+'\')">Note</button>' +
+        '</div>' +
       '</div>' +
-      '<button class="edit-btn" onclick="handleEditClick(\''+esc(r.no)+'\')">แก้ไข</button>' +
+      (tags ? '<div class="tags">'+tags+'</div>' : '') +
+      (score ? '<div class="score-tag '+scoreClass+'">'+score+'</div>' : '') +
     '</div>';
   }).join('');
+}
+
+function handleNoteClick(no) {
+  const row = allRows.find(r => String(r.no) === String(no));
+  noteModalBody.textContent = (row && row.note && row.note.trim()) ? row.note : 'ไม่มีบันทึกข้อความ';
+  openModal('noteModal');
 }
 
 // ===================== HERO BANNER =====================
@@ -331,7 +402,7 @@ function renderBanners(banners) {
   bannerTrack.innerHTML = slides.map(b => {
     const clickable = b.link_url ? 'cursor:pointer' : 'cursor:default';
     return '<div style="flex:0 0 100%;height:100%;'+clickable+'" data-link="'+esc(b.link_url||'')+'">' +
-      '<img src="'+esc(b.image_url)+'" draggable="false"></div>';
+      '<img src="'+esc(normalizeImageUrl(b.image_url))+'" draggable="false"></div>';
   }).join('');
   trackPosition = 0;
   bannerTrack.style.transform = 'translateX(0px)';
@@ -396,6 +467,26 @@ function setupBannerDrag() {
   bannerTrack.addEventListener('mousedown', e => { e.preventDefault(); onDown(e.clientX); });
   window.addEventListener('mousemove', e => onMove(e.clientX));
   window.addEventListener('mouseup', onUp);
+}
+
+// ===================== UI HELPERS =====================
+function setButtonLoading(btn, labelEl, isLoading, loadingText, normalText) {
+  btn.disabled = isLoading;
+  if (isLoading) {
+    labelEl.innerHTML = '<span class="spinner"></span>' + loadingText;
+  } else {
+    labelEl.textContent = normalText;
+  }
+}
+
+function copyPasscode() {
+  const text = successPasscode.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    copyPasscodeBtn.textContent = '✅ คัดลอกแล้ว';
+    setTimeout(() => { copyPasscodeBtn.textContent = '📋 คัดลอกรหัสผ่าน'; }, 1800);
+  }).catch(() => {
+    copyPasscodeBtn.textContent = 'คัดลอกไม่สำเร็จ ลองกดค้างเพื่อคัดลอกเอง';
+  });
 }
 
 // ===================== EDIT / LOGIN FLOW =====================
@@ -501,6 +592,7 @@ async function submitEdit() {
   };
   if (currentAuth) { payload.phone = currentAuth.phone; payload.passcode = currentAuth.passcode; }
 
+  setButtonLoading(editSubmitBtn, editSubmitLabel, true, 'กำลังบันทึก...', 'ยืนยันบันทึกข้อมูล');
   try {
     const data = await apiPost(payload);
     if (!data.success) { editErr.textContent = data.error || 'บันทึกไม่สำเร็จ'; return; }
@@ -514,6 +606,8 @@ async function submitEdit() {
     openModal('successModal');
   } catch (err) {
     editErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  } finally {
+    setButtonLoading(editSubmitBtn, editSubmitLabel, false, '', 'ยืนยันบันทึกข้อมูล');
   }
 }
 

@@ -32,9 +32,9 @@
   #projectPills .pill{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer}
   #projectPills .pill.active{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
 
-  #heroBanner{max-width:480px;margin:0 auto;overflow:hidden;position:relative;aspect-ratio:2.2/1;border-radius:20px;display:none}
+  #heroBanner{max-width:480px;margin:0 auto;overflow:hidden;position:relative;aspect-ratio:2.2/1;border-radius:0;display:none}
   #bannerTrack{display:flex;height:100%;touch-action:pan-y}
-  #bannerTrack img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;border-radius:20px}
+  #bannerTrack img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;border-radius:0}
 
   /* ===== Usage instructions ===== */
   .instructions{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin:16px 0;display:flex;flex-direction:column;gap:12px}
@@ -341,12 +341,13 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// Accepts either a direct image URL or a Google Drive share link
-// (e.g. https://drive.google.com/file/d/XXXX/view) and normalizes the
-// latter into a format <img> can actually render.
+// Only rewrites genuine Google Drive "share" links (drive.google.com/file/d/ID/view),
+// which don't render as <img>. URLs that already work as image sources —
+// like drive.google.com/thumbnail?id=... or an already-formed uc?...id=...
+// — are left exactly as-is, since rewriting those can break a working link.
 function normalizeImageUrl(url) {
   if (!url) return '';
-  const m = String(url).match(/\/d\/([a-zA-Z0-9_-]+)/) || String(url).match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const m = String(url).match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (m) return 'https://drive.google.com/uc?export=view&id=' + m[1];
   return url;
 }

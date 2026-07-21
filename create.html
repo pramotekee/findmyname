@@ -88,11 +88,11 @@
         <label class="radio-quota"><input type="radio" name="scoreType" value="quota"> ได้คะแนนจากการเป็นเด็กเส้นเด็กฝาก</label>
       </div>
     </div>
-    <div class="form-group"><label>หมายเหตุ (พิมพ์อิสระ)</label><textarea id="cNote"></textarea></div>
+    <div class="form-group"><label>Note</label><textarea id="cNote"></textarea></div>
     <div class="form-group">
       <label>หมายเลขโทรศัพท์<span class="required">*</span></label>
       <input type="tel" id="cPhone">
-      <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลของคุณในครั้งถัดไป และในกรณีที่เจ้าหน้าที่รัฐผู้รับผิดชอบตรวจสอบต้องติดต่อสอบถาม</small>
+      <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลของคุณในครั้งถัดไป</small>
     </div>
     <div class="err" id="cErr"></div>
     <button id="createSubmitBtn" onclick="submitCreate()"><span id="createSubmitLabel">เพิ่มชื่อของฉัน</span></button>
@@ -102,7 +102,7 @@
 <div class="modal-overlay hidden" id="successModal">
   <div class="modal">
     <h3>เพิ่มชื่อสำเร็จ</h3>
-    <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับเบอร์โทรของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
+    <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับหมายเลขโทรศัพท์ของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
     <div class="passcode-display" id="successPasscode"></div>
     <button class="copy-btn" onclick="copyPasscode()" id="copyPasscodeBtn">📋 คัดลอกรหัสผ่าน</button>
     <button onclick="location.href='index.html'">กลับหน้าแรก</button>

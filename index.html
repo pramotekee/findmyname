@@ -45,6 +45,10 @@
   .instructions .inline-create-btn{display:inline-block;margin-top:6px;background:#61D836;color:#1A1A1A;text-decoration:none;font-weight:700;font-size:13px;padding:8px 16px;border-radius:10px}
   .instructions .inline-tag{display:inline-block;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px}
   .instructions .inline-tag.blue{background:#3E9AE8;color:#fff}
+  .instructions .announce-box{background:#E9F8EF;border:1px solid #BFE9CE;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.7;color:#1A1A1A}
+
+  #backToTop{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:50%;background:#1A1A1A;color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:90;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+  #backToTop.show{opacity:1;visibility:visible}
 
   .search-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
   .search-box input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:15px;background:var(--bg)}
@@ -126,6 +130,7 @@
         <a class="inline-create-btn" href="create.html">+ Create</a>
       </div>
     </div>
+    <div class="announce-box">ขอเชิญชวนข้าราชการที่ได้รับบรรจุแต่งตั้งจากการใช้ความรู้ความสามารถความมุ่งมั่นพยายามของตนเอง ในการสอบคัดเลือกเข้ามาอย่างถูกต้องโปร่งใส ร่วมด้วยช่วยกันมาลงชื่อเพื่อให้ประเทศไทยมั่นใจได้ว่าประเทศนี้เมืองนี้ยังไม่สิ้นคนดี</div>
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-text"><b>หากคุณพบชื่อตัวเอง แต่มีจุดผิด</b> และอยากแก้ไข เพิ่มข้อมูลต่างๆ สามารถกดแก้ไขได้ที่ <span class="inline-tag">Edit</span></div>
@@ -152,6 +157,8 @@
   <div class="name-list" id="nameList"></div>
 
 </div>
+
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="กลับขึ้นด้านบน">↑</button>
 
 <!-- ===== LOGIN MODAL ===== -->
 <div class="modal-overlay hidden" id="loginModal">
@@ -633,6 +640,10 @@ function selectProject(p) {
   // or refetch with ?project=... — wire this up when the feature goes live
 }
 */
+
+window.addEventListener('scroll', () => {
+  document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);
+});
 
 init();
 </script>

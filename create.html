@@ -137,6 +137,12 @@ async function submitCreate() {
   const role = cRole.value === '__other__' ? cRoleOther.value.trim() : cRole.value;
   const scoreType = (document.querySelector('input[name=scoreType]:checked') || {}).value || '';
 
+  if (!role) { cErr.textContent = 'กรุณาเลือกสายงาน'; return; }
+  if (!cProvince.value) { cErr.textContent = 'กรุณาเลือกจังหวัด'; return; }
+  if (!cRegion.value) { cErr.textContent = 'กรุณาเลือกภาค'; return; }
+  if (!cDistric.value) { cErr.textContent = 'กรุณาเลือกเขต'; return; }
+  if (!scoreType) { cErr.textContent = 'กรุณาเลือกว่าคะแนนของคุณได้มาจากวิธีใด'; return; }
+
   const payload = {
     action: 'createRow',
     firstname, lastname, role,

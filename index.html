@@ -601,6 +601,12 @@ async function submitEdit() {
   const role = editRole.value === '__other__' ? editRoleOther.value.trim() : editRole.value;
   const scoreType = (document.querySelector('input[name=scoreType]:checked') || {}).value || '';
 
+  if (!role) { editErr.textContent = 'กรุณาเลือกสายงาน'; return; }
+  if (!editProvince.value) { editErr.textContent = 'กรุณาเลือกจังหวัด'; return; }
+  if (!editRegion.value) { editErr.textContent = 'กรุณาเลือกภาค'; return; }
+  if (!editDistric.value) { editErr.textContent = 'กรุณาเลือกเขต'; return; }
+  if (!scoreType) { editErr.textContent = 'กรุณาเลือกว่าคะแนนของคุณได้มาจากวิธีใด'; return; }
+
   const payload = {
     action: 'updateRow',
     no: pendingEditNo,

@@ -598,7 +598,7 @@ async function submitEdit() {
   const phone = editPhone.value.trim();
   if (!firstname || !lastname) { editErr.textContent = 'กรุณากรอกชื่อและนามสกุล'; return; }
   if (!phone) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
-  if (!/^[0-9]{9,10}$/.test(phone)) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง (ตัวเลข 9-10 หลัก)'; return; }
+  if (!/^[0-9]{9,10}$/.test(phone)) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'; return; }
 
   const role = editRole.value === '__other__' ? editRoleOther.value.trim() : editRole.value;
   const scoreType = (document.querySelector('input[name=scoreType]:checked') || {}).value || '';

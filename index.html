@@ -100,6 +100,7 @@
   .modal .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:20px;color:var(--text-secondary);cursor:pointer;padding:4px;line-height:1;width:auto}
   .form-group{margin-bottom:14px}
   .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
+  .form-group label .required{color:var(--error);margin-left:2px}
   .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
   .form-group textarea{min-height:70px;resize:vertical}
   .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
@@ -195,7 +196,7 @@
     <div class="form-group"><label>ชื่อจริง</label><input type="text" id="editFirstname"></div>
     <div class="form-group"><label>นามสกุล</label><input type="text" id="editLastname"></div>
     <div class="form-group">
-      <label>สายงาน</label>
+      <label>สายงาน<span class="required">*</span></label>
       <select id="editRole">
         <option value="สายงานวิชาการ">สายงานวิชาการ</option>
         <option value="สายงานทั่วไป">สายงานทั่วไป</option>
@@ -205,13 +206,13 @@
       </select>
       <input type="text" id="editRoleOther" class="hidden" placeholder="ระบุสายงานของคุณ" style="margin-top:8px">
     </div>
-    <div class="form-group"><label>จังหวัด</label><select id="editProvince"></select></div>
-    <div class="form-group"><label>ภาค</label><select id="editRegion"></select></div>
-    <div class="form-group"><label>เขต</label>
+    <div class="form-group"><label>จังหวัด<span class="required">*</span></label><select id="editProvince"></select></div>
+    <div class="form-group"><label>ภาค<span class="required">*</span></label><select id="editRegion"></select></div>
+    <div class="form-group"><label>เขต<span class="required">*</span></label>
       <select id="editDistric"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
     </div>
     <div class="form-group">
-      <label>คะแนนของคุณได้มาจากวิธีใด</label>
+      <label>คะแนนของคุณได้มาจากวิธีใด<span class="required">*</span></label>
       <div class="radio-group">
         <label class="radio-clear"><input type="radio" name="scoreType" value="clear"> ได้คะแนนจากความรู้ความสามารถตนเอง</label>
         <label class="radio-cheat"><input type="radio" name="scoreType" value="cheat"> ได้คะแนนจากการใช้เงินซื้อ</label>

@@ -183,7 +183,7 @@
     <div class="form-group"><label>หมายเลขโทรศัพท์</label><input type="tel" id="loginPhone"></div>
     <div class="form-group"><label>รหัสผ่าน (8 หลัก)</label><input type="text" id="loginPasscode"></div>
     <div class="err" id="loginErr"></div>
-    <button onclick="submitLogin()">เข้าสู่ระบบ</button>
+    <button id="loginSubmitBtn" onclick="submitLogin()"><span id="loginSubmitLabel">เข้าสู่ระบบ</span></button>
     <button class="btn-secondary" onclick="closeModal('loginModal')">ยกเลิก</button>
   </div>
 </div>
@@ -550,6 +550,7 @@ async function submitLogin() {
   const passcode = loginPasscode.value.trim();
   if (!phone || !passcode) { loginErr.textContent = 'กรุณากรอกเบอร์โทรและรหัสผ่านให้ครบ'; return; }
 
+  setButtonLoading(loginSubmitBtn, loginSubmitLabel, true, 'กำลังค้นหา...', 'เข้าสู่ระบบ');
   try {
     const data = await apiPost({ action: 'login', no: pendingEditNo, phone, passcode });
     if (!data.success) { loginErr.textContent = data.error || 'เข้าสู่ระบบไม่สำเร็จ'; return; }
@@ -560,6 +561,8 @@ async function submitLogin() {
     editHint.textContent = 'แก้ไขข้อมูลของคุณได้เลย';
   } catch (err) {
     loginErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  } finally {
+    setButtonLoading(loginSubmitBtn, loginSubmitLabel, false, '', 'เข้าสู่ระบบ');
   }
 }
 

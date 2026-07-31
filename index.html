@@ -84,6 +84,7 @@
   .name-card .score-tag.score-clear{background:#E9F8EF;color:#2E9E5B}
   .name-card .score-tag.score-cheat{background:#FBE9E7;color:#D9483A}
   .name-card .score-tag.score-quota{background:#F1E8FB;color:#7C4FCB}
+  .name-card .update-date{margin-top:8px;font-size:11px;color:var(--text-secondary);opacity:.75}
   .name-card button.edit-btn,.name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
   .name-card button.edit-btn{background:var(--accent);color:#1A1A1A}
   .name-card button.note-btn{background:#3E9AE8;color:#fff}
@@ -237,6 +238,7 @@
     <button class="modal-close" onclick="closeModal('noteModal')">✕</button>
     <h3>บันทึกข้อความ</h3>
     <p class="hint" id="noteModalBody" style="white-space:pre-wrap;color:var(--text-primary)"></p>
+    <p class="hint hidden" id="noteModalDate" style="font-size:11px;color:var(--text-secondary);opacity:.75;margin-top:-6px"></p>
   </div>
 </div>
 
@@ -395,13 +397,21 @@ function renderList(rows) {
       '</div>' +
       (tags ? '<div class="tags">'+tags+'</div>' : '') +
       (score ? '<div class="score-tag '+scoreClass+'">'+score+'</div>' : '') +
+      (r.update_date ? '<div class="update-date">อัพเดทข้อมูลเมื่อ '+esc(r.update_date)+'</div>' : '') +
     '</div>';
   }).join('');
 }
 
 function handleNoteClick(no) {
   const row = allRows.find(r => String(r.no) === String(no));
-  noteModalBody.textContent = (row && row.note && row.note.trim()) ? row.note : 'ไม่มีบันทึกข้อความ';
+  const hasNote = !!(row && row.note && String(row.note).trim());
+  noteModalBody.textContent = hasNote ? row.note : 'ไม่มีบันทึกข้อความ';
+  if (hasNote && row.update_date) {
+    noteModalDate.textContent = 'อัพเดทข้อมูลเมื่อ ' + row.update_date;
+    noteModalDate.classList.remove('hidden');
+  } else {
+    noteModalDate.classList.add('hidden');
+  }
   openModal('noteModal');
 }
 

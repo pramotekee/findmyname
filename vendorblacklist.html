@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find My Name — ผู้รับจ้างทิ้งงานภาครัฐ</title>
+
+<!-- Open Graph / social share preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานภาครัฐ">
+<meta property="og:description" content="รวมรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ">
+<meta property="og:image" content="https://drive.google.com/thumbnail?id=1dxawU_s-iku6lbLmC9M6zPprrtirKNYo&sz=w1200">
+<meta property="og:url" content="https://findmyname.vercel.app/vendorblacklist.html">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานภาครัฐ">
+<meta name="twitter:description" content="รวมรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ">
+<meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1dxawU_s-iku6lbLmC9M6zPprrtirKNYo&sz=w1200">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,700;1,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F4F2;
+    --surface:#FFFFFF;
+    --accent:#FFC93C;
+    --accent-dark:#E8B62E;
+    --text-primary:#1A1A1A;
+    --text-secondary:#7A7A7A;
+    --border:#E2E2E0;
+    --success:#2E9E5B;
+    --error:#E74C3C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text-primary)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+  .top-zone{background:var(--accent)}
+  header{padding:28px 16px 20px;text-align:center}
+  header h1{font-style:italic;font-weight:800;font-size:34px;letter-spacing:-0.5px;color:#1A1A1A}
+  header p.sub{color:#1A1A1A;font-size:13px;margin-top:4px}
+
+  /* ===== Project pill switcher — each pill links to its own standalone content file ===== */
+  #projectPills{display:flex;gap:8px;margin-top:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 2px 6px;scrollbar-width:none}
+  #projectPills::-webkit-scrollbar{display:none}
+  #projectPills a.pill{flex:0 0 auto;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:var(--text-primary);white-space:nowrap}
+  #projectPills a.pill.active{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+
+  #heroBanner{max-width:480px;margin:0 auto;overflow:hidden;position:relative;aspect-ratio:2.2/1;border-radius:0;display:none}
+  #bannerTrack{display:flex;height:100%;touch-action:pan-y}
+  #bannerTrack img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;border-radius:0}
+
+  /* ===== Usage instructions (plain description — no numbered steps for this content) ===== */
+  .instructions{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin:16px 0;display:flex;flex-direction:column;gap:12px}
+  .instructions .desc-text{font-size:13px;line-height:1.7}
+  .instructions .inline-create-btn{display:inline-block;margin-top:8px;background:#61D836;color:#1A1A1A;text-decoration:none;font-weight:700;font-size:13px;padding:8px 16px;border-radius:10px}
+  .instructions .inline-tag{display:inline-block;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px}
+  .instructions .inline-tag.blue{background:#3E9AE8;color:#fff}
+  .instructions .announce-box{background:#FBE9E7;border:1px solid #F3C4BD;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.7;color:#1A1A1A}
+
+  #backToTop{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:50%;background:#1A1A1A;color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:90;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+  #backToTop.show{opacity:1;visibility:visible}
+
+  .search-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+  .search-box input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:15px;background:var(--bg)}
+  .filters{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+  .filters select{padding:10px 12px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:13px;background:var(--bg);color:var(--text-primary)}
+  .clear-filters{margin-top:10px;text-align:right}
+  .clear-filters button{background:none;border:none;color:var(--text-secondary);font-size:12px;text-decoration:underline;cursor:pointer;font-family:inherit}
+
+  #resultCount{font-size:13px;color:var(--text-secondary);margin-bottom:10px}
+
+  .name-list{display:flex;flex-direction:column;gap:10px;padding-bottom:24px}
+  .name-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+  .name-card .card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .name-card .fullname{font-weight:700;font-size:16px;min-width:0}
+  .name-card .card-actions{flex-shrink:0;display:flex;gap:6px}
+  .name-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .name-card .tag{background:var(--bg);border-radius:999px;padding:3px 10px;font-size:11px;color:var(--text-secondary)}
+  .name-card .update-date{margin-top:8px;font-size:11px;color:var(--text-secondary);opacity:.75}
+  .name-card button.edit-btn,.name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
+  .name-card button.edit-btn{background:var(--accent);color:#1A1A1A}
+  .name-card button.note-btn{background:#3E9AE8;color:#fff}
+
+  .empty-state{text-align:center;color:var(--text-secondary);padding:40px 20px;font-size:14px}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:100}
+  .modal-overlay.hidden{display:none}
+  .modal{background:var(--surface);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:26px 22px 30px;max-height:88vh;overflow-y:auto;position:relative}
+  @media(min-width:560px){.modal-overlay{align-items:center}.modal{border-radius:24px}}
+  .modal h3{font-size:20px;font-weight:700;margin-bottom:6px}
+  .modal p.hint{color:var(--text-secondary);font-size:13px;margin-bottom:16px}
+  .modal.center{text-align:center}
+  .modal .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:20px;color:var(--text-secondary);cursor:pointer;padding:4px;line-height:1;width:auto}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
+  .form-group label .required{color:var(--error);margin-left:2px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
+  .form-group textarea{min-height:70px;resize:vertical}
+  .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
+  .hidden{display:none !important}
+  .err{color:var(--error);font-size:12px;min-height:16px;margin:6px 0}
+  .modal button{width:100%;padding:13px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .modal button.btn-secondary{background:var(--bg);color:var(--text-secondary);font-weight:600}
+  .modal button:disabled{opacity:.7;cursor:not-allowed}
+  .passcode-display{font-size:30px;font-weight:800;letter-spacing:4px;color:var(--accent-dark);background:var(--bg);border-radius:14px;padding:16px;margin:14px 0}
+  .copy-btn{background:#1A1A1A !important;color:#fff !important;font-size:13px !important;padding:10px !important}
+
+  .spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,.25);border-top-color:#1A1A1A;border-radius:50%;animation:spin .7s linear infinite}
+  .spinner.light{border:2px solid rgba(255,255,255,.35);border-top-color:#fff}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="top-zone">
+  <header>
+    <h1>Find My Name</h1>
+    <p class="sub">รวมรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ</p>
+    <div id="projectPills">
+      <a class="pill" href="index.html">รายชื่อผู้สอบบรรจุข้าราชการ (ปี 68-69)</a>
+      <a class="pill active" href="vendorblacklist.html">รายชื่อผู้รับจ้างทิ้งงานภาครัฐ</a>
+    </div>
+  </header>
+  <div class="wrap">
+    <div id="heroBanner"><div id="bannerTrack"></div></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="instructions">
+    <div class="desc-text">
+      หากทราบชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการแล้วว่าเป็นผู้ทิ้งงาน สามารถเผยแพร่ชื่อผู้รับจ้าง และข้อมูลต่างๆ ได้ที่นี่<br>
+      <a class="inline-create-btn" href="createvendorblacklist.html">+ Create</a>
+    </div>
+    <div class="announce-box">พบข้อมูลผิดพลาด หรือมีรายละเอียดเพิ่มเติมที่อยากแก้ไข สามารถกดแก้ไขได้ที่ <span class="inline-tag blue">Edit</span> บนแต่ละรายการ</div>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="พิมพ์ชื่อบริษัทผู้รับจ้าง...">
+    <div class="filters">
+      <select id="filterLetter"><option value="">ก-ฮ (ทั้งหมด)</option></select>
+      <select id="filterProvince"><option value="">จังหวัดหน่วยงาน (ทั้งหมด)</option></select>
+    </div>
+    <div class="clear-filters"><button onclick="resetFilters()">ล้างตัวกรองทั้งหมด</button></div>
+  </div>
+
+  <div id="resultCount"></div>
+  <div class="name-list" id="nameList"></div>
+
+</div>
+
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="กลับขึ้นด้านบน">↑</button>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div class="modal-overlay hidden" id="loginModal">
+  <div class="modal">
+    <h3>ยืนยันตัวตน</h3>
+    <p class="hint">รายชื่อนี้เคยถูกเข้ามาเพิ่มเติม หรือแก้ไขข้อมูลไปแล้ว กรุณากรอกหมายเลขโทรศัพท์และรหัสผ่านที่เคยได้รับตอนแก้ไขครั้งแรก</p>
+    <div class="form-group"><label>หมายเลขโทรศัพท์</label><input type="tel" id="loginPhone"></div>
+    <div class="form-group"><label>รหัสผ่าน (8 หลัก)</label><input type="text" id="loginPasscode"></div>
+    <div class="err" id="loginErr"></div>
+    <button id="loginSubmitBtn" onclick="submitLogin()"><span id="loginSubmitLabel">เข้าสู่ระบบ</span></button>
+    <button class="btn-secondary" onclick="closeModal('loginModal')">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay hidden" id="editModal">
+  <div class="modal">
+    <h3>แก้ไขข้อมูลผู้รับจ้าง</h3>
+    <p class="hint" id="editHint">ตรวจสอบและแก้ไขข้อมูลด้านล่างได้ตามต้องการ</p>
+    <div class="form-group"><label>ชื่อบริษัทผู้รับจ้าง<span class="required">*</span></label><input type="text" id="editCompanyName"></div>
+    <div class="form-group"><label>ที่ตั้งบริษัท</label><input type="text" id="editCompanyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อบริษัท</label><input type="tel" id="editCompanyPhone"></div>
+    <div class="form-group"><label>อีเมลบริษัท</label><input type="email" id="editCompanyEmail"></div>
+    <div class="form-group"><label>Website บริษัท</label><input type="text" id="editCompanyWebsite"></div>
+    <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน</label><input type="text" id="editProjectName"></div>
+    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ</label><input type="text" id="editAgencyName"></div>
+    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ</label><input type="text" id="editAgencyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงาน</label><input type="tel" id="editAgencyPhone"></div>
+    <div class="form-group"><label>อีเมลหน่วยงาน</label><input type="email" id="editAgencyEmail"></div>
+    <div class="form-group"><label>Website หน่วยงาน</label><input type="text" id="editAgencyWebsite"></div>
+    <div class="form-group"><label>จังหวัด (ของหน่วยงานเจ้าของโครงการ)<span class="required">*</span></label><select id="editProvince"></select></div>
+    <div class="form-group"><label>Note</label><textarea id="editNote"></textarea></div>
+    <div class="form-group">
+      <label>หมายเลขโทรศัพท์ (สำหรับเข้าสู่ระบบครั้งถัดไป)<span class="required">*</span></label>
+      <input type="tel" id="editPhone">
+      <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลนี้ในครั้งถัดไปเท่านั้น จะไม่แสดงต่อสาธารณะ</small>
+    </div>
+    <div class="err" id="editErr"></div>
+    <button id="editSubmitBtn" onclick="submitEdit()"><span id="editSubmitLabel">ยืนยันบันทึกข้อมูล</span></button>
+    <button class="btn-secondary" onclick="closeModal('editModal')">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- ===== NOTE MODAL ===== -->
+<div class="modal-overlay hidden" id="noteModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('noteModal')">✕</button>
+    <h3>บันทึกข้อความ</h3>
+    <p class="hint" id="noteModalBody" style="white-space:pre-wrap;color:var(--text-primary)"></p>
+    <p class="hint hidden" id="noteModalDate" style="font-size:11px;color:var(--text-secondary);opacity:.75;margin-top:-6px"></p>
+  </div>
+</div>
+
+<!-- ===== SUCCESS MODAL ===== -->
+<div class="modal-overlay hidden" id="successModal">
+  <div class="modal center">
+    <h3>บันทึกข้อมูลสำเร็จ</h3>
+    <div id="successPasscodeWrap" class="hidden">
+      <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับเบอร์โทรของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
+      <div class="passcode-display" id="successPasscode"></div>
+      <button class="copy-btn" onclick="copyPasscode()" id="copyPasscodeBtn">📋 คัดลอกรหัสผ่าน</button>
+    </div>
+    <button onclick="closeModal('successModal'); location.reload();">กลับหน้ารายชื่อ</button>
+  </div>
+</div>
+
+<script>
+// ===================== CONFIG =====================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdJjKdDXSautMm402qTkwccQbN3etPvf-WfqWwQgzlW1sjMb-9uv_20xvufEoKTsCU/exec';
+
+const THAI_LETTERS = ['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ','พ','ฟ','ภ','ม','ย','ร','ล','ว','ศ','ษ','ส','ห','ฬ','อ','ฮ'];
+const PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
+
+let allRows = [];
+let pendingEditNo = null;   // "no" (venN) ของแถวที่กำลัง login/edit อยู่
+let currentAuth = null;     // { phone, passcode } หลัง login สำเร็จ
+let isFirstTimeClaim = false;
+
+// ===================== API HELPERS =====================
+async function apiGet(action, params) {
+  const query = new URLSearchParams({ action, ...(params||{}) });
+  const res = await fetch(SCRIPT_URL + '?' + query.toString());
+  return res.json();
+}
+async function apiPost(payload) {
+  const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+  return res.json();
+}
+
+// ===================== INIT =====================
+function populateSelect(el, values, placeholder) {
+  el.innerHTML = (placeholder ? '<option value="">'+placeholder+'</option>' : '') +
+    values.map(v => '<option value="'+v+'">'+v+'</option>').join('');
+}
+
+function init() {
+  populateSelect(filterLetter, THAI_LETTERS, 'ก-ฮ (ทั้งหมด)');
+  populateSelect(filterProvince, PROVINCES, 'จังหวัดหน่วยงาน (ทั้งหมด)');
+  populateSelect(editProvince, PROVINCES);
+
+  loadVendors();
+  loadBanners();
+
+  [searchInput, filterLetter, filterProvince]
+    .forEach(el => el.addEventListener('input', applyFilters));
+}
+
+// ===================== LIST + FILTER =====================
+async function loadVendors() {
+  nameList.innerHTML = '<div class="empty-state">กำลังโหลดรายชื่อ...</div>';
+  try {
+    const data = await apiGet('listVendors', {});
+    allRows = (data.success && data.rows) ? data.rows : [];
+    applyFilters();
+  } catch (err) {
+    nameList.innerHTML = '<div class="empty-state">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</div>';
+  }
+}
+
+function applyFilters() {
+  const q = searchInput.value.trim().toLowerCase();
+  const letter = filterLetter.value;
+  const province = filterProvince.value;
+
+  const filtered = allRows.filter(r => {
+    if (q) {
+      const name = String(r.company_name).toLowerCase();
+      if (!name.includes(q)) return false;
+    }
+    if (letter && !String(r.company_name).startsWith(letter)) return false;
+    if (province && r.province !== province) return false;
+    return true;
+  });
+
+  renderList(filtered);
+}
+
+function resetFilters() {
+  searchInput.value = '';
+  filterLetter.value = '';
+  filterProvince.value = '';
+  applyFilters();
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Only rewrites genuine Google Drive "share" links (drive.google.com/file/d/ID/view),
+// which don't render as <img>. URLs that already work as image sources are left as-is.
+function normalizeImageUrl(url) {
+  if (!url) return '';
+  const m = String(url).match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/uc?export=view&id=' + m[1];
+  return url;
+}
+
+function renderList(rows) {
+  resultCount.textContent = 'พบ ' + rows.length + ' รายชื่อ';
+  if (rows.length === 0) {
+    nameList.innerHTML = '<div class="empty-state">ไม่พบรายชื่อที่ตรงกับเงื่อนไข ลองปรับตัวกรองดูนะ</div>';
+    return;
+  }
+  nameList.innerHTML = rows.map(r => {
+    const tags = [r.province, r.project_name, r.agency_name]
+      .filter(Boolean).map(t => '<span class="tag">'+esc(t)+'</span>').join('');
+    return '<div class="name-card">' +
+      '<div class="card-top">' +
+        '<div class="fullname">'+esc(r.company_name)+'</div>' +
+        '<div class="card-actions">' +
+          '<button class="edit-btn" onclick="handleEditClick(\''+esc(r.no)+'\')">Edit</button>' +
+          '<button class="note-btn" onclick="handleNoteClick(\''+esc(r.no)+'\')">Note</button>' +
+        '</div>' +
+      '</div>' +
+      (tags ? '<div class="tags">'+tags+'</div>' : '') +
+      (r.update_date ? '<div class="update-date">อัพเดทข้อมูลเมื่อ '+esc(r.update_date)+'</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function handleNoteClick(no) {
+  const row = allRows.find(r => String(r.no) === String(no));
+  const hasNote = !!(row && row.note && String(row.note).trim());
+  noteModalBody.textContent = hasNote ? row.note : 'ไม่มีบันทึกข้อความ';
+  if (hasNote && row.update_date) {
+    noteModalDate.textContent = 'อัพเดทข้อมูลเมื่อ ' + row.update_date;
+    noteModalDate.classList.remove('hidden');
+  } else {
+    noteModalDate.classList.add('hidden');
+  }
+  openModal('noteModal');
+}
+
+// ===================== HERO BANNER =====================
+let bannerCount = 0, trackPosition = 0, loopWidth = 0, isDragging = false, dragStartX = 0, dragStartPosition = 0, dragTraveled = 0, lastFrameTime = null;
+const BANNER_SPEED_PX_PER_SEC = 40;
+
+async function loadBanners() {
+  try {
+    const data = await apiGet('getBanners', { project: 'ทิ้งงาน' });
+    if (data.success && data.banners && data.banners.length > 0) {
+      renderBanners(data.banners);
+      heroBanner.style.display = 'block';
+    }
+  } catch (err) { /* decorative — fail silently */ }
+}
+
+function renderBanners(banners) {
+  bannerCount = banners.length;
+  const slides = bannerCount > 1 ? banners.concat(banners) : banners;
+  bannerTrack.innerHTML = slides.map(b => {
+    const clickable = b.link_url ? 'cursor:pointer' : 'cursor:default';
+    return '<div style="flex:0 0 100%;height:100%;'+clickable+'" data-link="'+esc(b.link_url||'')+'">' +
+      '<img src="'+esc(normalizeImageUrl(b.image_url))+'" draggable="false"></div>';
+  }).join('');
+  trackPosition = 0;
+  bannerTrack.style.transform = 'translateX(0px)';
+  attachBannerClicks();
+  setupBannerDrag();
+  if (bannerCount > 1) {
+    heroBanner.style.cursor = 'grab';
+    lastFrameTime = null;
+    requestAnimationFrame(bannerFrame);
+  }
+}
+
+function attachBannerClicks() {
+  bannerTrack.querySelectorAll('div[data-link]').forEach(slide => {
+    slide.addEventListener('click', () => {
+      if (dragTraveled > 5) return;
+      const link = slide.getAttribute('data-link');
+      if (link) window.open(link, '_blank');
+    });
+  });
+}
+
+function bannerFrame(timestamp) {
+  if (bannerCount <= 1) return;
+  if (lastFrameTime === null) lastFrameTime = timestamp;
+  const dt = (timestamp - lastFrameTime) / 1000;
+  lastFrameTime = timestamp;
+  if (!isDragging) {
+    loopWidth = bannerTrack.scrollWidth / 2;
+    trackPosition -= BANNER_SPEED_PX_PER_SEC * dt;
+    if (trackPosition <= -loopWidth) trackPosition += loopWidth;
+    bannerTrack.style.transform = 'translateX(' + trackPosition + 'px)';
+  }
+  requestAnimationFrame(bannerFrame);
+}
+
+function setupBannerDrag() {
+  const onDown = (clientX) => {
+    if (bannerCount <= 1) return;
+    isDragging = true; dragTraveled = 0; dragStartX = clientX; dragStartPosition = trackPosition;
+    heroBanner.style.cursor = 'grabbing';
+  };
+  const onMove = (clientX) => {
+    if (!isDragging) return;
+    dragTraveled = Math.abs(clientX - dragStartX);
+    trackPosition = dragStartPosition + (clientX - dragStartX);
+    bannerTrack.style.transform = 'translateX(' + trackPosition + 'px)';
+  };
+  const onUp = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    heroBanner.style.cursor = 'grab';
+    loopWidth = bannerTrack.scrollWidth / 2;
+    if (loopWidth > 0) {
+      trackPosition = trackPosition % loopWidth;
+      if (trackPosition > 0) trackPosition -= loopWidth;
+    }
+  };
+  bannerTrack.addEventListener('touchstart', e => onDown(e.touches[0].clientX), { passive: true });
+  bannerTrack.addEventListener('touchmove', e => onMove(e.touches[0].clientX), { passive: true });
+  bannerTrack.addEventListener('touchend', onUp);
+  bannerTrack.addEventListener('mousedown', e => { e.preventDefault(); onDown(e.clientX); });
+  window.addEventListener('mousemove', e => onMove(e.clientX));
+  window.addEventListener('mouseup', onUp);
+}
+
+// ===================== UI HELPERS =====================
+function setButtonLoading(btn, labelEl, isLoading, loadingText, normalText) {
+  btn.disabled = isLoading;
+  if (isLoading) {
+    labelEl.innerHTML = '<span class="spinner"></span>' + loadingText;
+  } else {
+    labelEl.textContent = normalText;
+  }
+}
+
+function copyPasscode() {
+  const text = successPasscode.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    copyPasscodeBtn.textContent = '✅ คัดลอกแล้ว';
+    setTimeout(() => { copyPasscodeBtn.textContent = '📋 คัดลอกรหัสผ่าน'; }, 1800);
+  }).catch(() => {
+    copyPasscodeBtn.textContent = 'คัดลอกไม่สำเร็จ ลองกดค้างเพื่อคัดลอกเอง';
+  });
+}
+
+// ===================== EDIT / LOGIN FLOW =====================
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function handleEditClick(no) {
+  const row = allRows.find(r => String(r.no) === String(no));
+  if (!row) return;
+  pendingEditNo = no;
+  currentAuth = null;
+
+  if (row.hasPasscode) {
+    // เคยมีคนแก้ไขไปแล้ว — ต้องยืนยันเบอร์โทร + รหัสผ่านก่อน
+    loginErr.textContent = '';
+    loginPhone.value = '';
+    loginPasscode.value = '';
+    openModal('loginModal');
+  } else {
+    // ยังไม่เคยมีใครแก้ไขแถวนี้มาก่อน — เปิดฟอร์มแก้ไขได้ตรงๆ ไม่ต้อง auth
+    isFirstTimeClaim = true;
+    openEditForm({
+      no: row.no, company_name: row.company_name, company_address: '', company_phone: '',
+      company_email: '', company_website: '', project_name: '', agency_name: '',
+      agency_address: '', agency_phone: '', agency_email: '', agency_website: '',
+      province: '', note: '', phone: ''
+    });
+    editHint.textContent = 'ยังไม่มีใครแก้ไขรายการนี้มาก่อน — กรอกข้อมูลที่เหลือให้ครบ';
+  }
+}
+
+async function submitLogin() {
+  loginErr.textContent = '';
+  const phone = loginPhone.value.trim();
+  const passcode = loginPasscode.value.trim();
+  if (!phone || !passcode) { loginErr.textContent = 'กรุณากรอกเบอร์โทรและรหัสผ่านให้ครบ'; return; }
+
+  setButtonLoading(loginSubmitBtn, loginSubmitLabel, true, 'กำลังค้นหา...', 'เข้าสู่ระบบ');
+  try {
+    const data = await apiPost({ action: 'loginVendor', no: pendingEditNo, phone, passcode });
+    if (!data.success) { loginErr.textContent = data.error || 'เข้าสู่ระบบไม่สำเร็จ'; return; }
+    currentAuth = { phone, passcode };
+    isFirstTimeClaim = false;
+    closeModal('loginModal');
+    openEditForm(data.data);
+    editHint.textContent = 'แก้ไขข้อมูลได้เลย';
+  } catch (err) {
+    loginErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  } finally {
+    setButtonLoading(loginSubmitBtn, loginSubmitLabel, false, '', 'เข้าสู่ระบบ');
+  }
+}
+
+function openEditForm(row) {
+  editCompanyName.value = row.company_name || '';
+  editCompanyAddress.value = row.company_address || '';
+  editCompanyPhone.value = row.company_phone || '';
+  editCompanyEmail.value = row.company_email || '';
+  editCompanyWebsite.value = row.company_website || '';
+  editProjectName.value = row.project_name || '';
+  editAgencyName.value = row.agency_name || '';
+  editAgencyAddress.value = row.agency_address || '';
+  editAgencyPhone.value = row.agency_phone || '';
+  editAgencyEmail.value = row.agency_email || '';
+  editAgencyWebsite.value = row.agency_website || '';
+  editProvince.value = row.province || '';
+  editNote.value = row.note || '';
+  editPhone.value = row.phone || '';
+  editErr.textContent = '';
+  openModal('editModal');
+}
+
+async function submitEdit() {
+  editErr.textContent = '';
+  const company_name = editCompanyName.value.trim();
+  const phone = editPhone.value.trim();
+  if (!company_name) { editErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
+  if (!phone) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
+  if (!/^[0-9]{9,10}$/.test(phone)) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'; return; }
+  if (!editProvince.value) { editErr.textContent = 'กรุณาเลือกจังหวัด'; return; }
+
+  const payload = {
+    action: 'updateVendorRow',
+    no: pendingEditNo,
+    company_name,
+    company_address: editCompanyAddress.value.trim(),
+    company_phone: editCompanyPhone.value.trim(),
+    company_email: editCompanyEmail.value.trim(),
+    company_website: editCompanyWebsite.value.trim(),
+    project_name: editProjectName.value.trim(),
+    agency_name: editAgencyName.value.trim(),
+    agency_address: editAgencyAddress.value.trim(),
+    agency_phone: editAgencyPhone.value.trim(),
+    agency_email: editAgencyEmail.value.trim(),
+    agency_website: editAgencyWebsite.value.trim(),
+    province: editProvince.value,
+    note: editNote.value,
+    phone
+  };
+  if (currentAuth) { payload.phone = currentAuth.phone; payload.passcode = currentAuth.passcode; }
+
+  setButtonLoading(editSubmitBtn, editSubmitLabel, true, 'กำลังบันทึก...', 'ยืนยันบันทึกข้อมูล');
+  try {
+    const data = await apiPost(payload);
+    if (!data.success) { editErr.textContent = data.error || 'บันทึกไม่สำเร็จ'; return; }
+    closeModal('editModal');
+    if (data.passcode) {
+      successPasscodeWrap.classList.remove('hidden');
+      successPasscode.textContent = data.passcode;
+    } else {
+      successPasscodeWrap.classList.add('hidden');
+    }
+    openModal('successModal');
+  } catch (err) {
+    editErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  } finally {
+    setButtonLoading(editSubmitBtn, editSubmitLabel, false, '', 'ยืนยันบันทึกข้อมูล');
+  }
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);
+});
+
+init();
+</script>
+
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+
+</body>
+</html>

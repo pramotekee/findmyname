@@ -76,14 +76,16 @@
   .name-card .card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
   .name-card .fullname{font-weight:700;font-size:16px;min-width:0}
   .name-card .card-actions{flex-shrink:0;display:flex;gap:6px}
-  .name-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-  .name-card .tag{background:var(--bg);border-radius:999px;padding:3px 10px;font-size:11px;color:var(--text-secondary)}
-  .name-card .update-date{margin-top:8px;font-size:11px;color:var(--text-secondary);opacity:.75}
+  .name-card .info-list{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+  .name-card .info-row{font-size:13px;line-height:1.5;color:var(--text-primary)}
+  .name-card .info-row .info-label{color:var(--text-secondary);margin-right:4px}
+  .name-card .update-date{margin-top:10px;font-size:11px;color:var(--text-secondary);opacity:.75}
   .name-card button.edit-btn,.name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
   .name-card button.edit-btn{background:var(--accent);color:#1A1A1A}
   .name-card button.note-btn{background:#3E9AE8;color:#fff}
 
   .empty-state{text-align:center;color:var(--text-secondary);padding:40px 20px;font-size:14px}
+  .empty-state.loading-inline{display:flex;align-items:center;justify-content:center;gap:8px}
 
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:100}
   .modal-overlay.hidden{display:none}
@@ -135,7 +137,7 @@
       หากทราบชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการแล้วว่าเป็นผู้ทิ้งงาน สามารถเผยแพร่ชื่อผู้รับจ้าง และข้อมูลต่างๆ ได้ที่นี่<br>
       <a class="inline-create-btn" href="createvendorblacklist.html">+ Create</a>
     </div>
-    <div class="announce-box">พบข้อมูลผิดพลาด หรือมีรายละเอียดเพิ่มเติมที่อยากแก้ไข สามารถกดแก้ไขได้ที่ <span class="inline-tag blue">Edit</span> บนแต่ละรายการ</div>
+    <div class="announce-box">หากคุณพบข้อมูลผิดพลาด หรือมีรายละเอียดเพิ่มเติมที่อยากแก้ไข สามารถกดแก้ไขได้ที่ <span class="inline-tag">Edit</span> บนแต่ละชื่อผู้รับจ้าง</div>
   </div>
 
   <div class="search-box">
@@ -177,12 +179,12 @@
     <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อบริษัท</label><input type="tel" id="editCompanyPhone"></div>
     <div class="form-group"><label>อีเมลบริษัท</label><input type="email" id="editCompanyEmail"></div>
     <div class="form-group"><label>Website บริษัท</label><input type="text" id="editCompanyWebsite"></div>
-    <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน</label><input type="text" id="editProjectName"></div>
-    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ</label><input type="text" id="editAgencyName"></div>
-    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ</label><input type="text" id="editAgencyAddress"></div>
-    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงาน</label><input type="tel" id="editAgencyPhone"></div>
-    <div class="form-group"><label>อีเมลหน่วยงาน</label><input type="email" id="editAgencyEmail"></div>
-    <div class="form-group"><label>Website หน่วยงาน</label><input type="text" id="editAgencyWebsite"></div>
+    <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน<span class="required">*</span></label><input type="text" id="editProjectName"></div>
+    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="editAgencyName"></div>
+    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="editAgencyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="tel" id="editAgencyPhone"></div>
+    <div class="form-group"><label>อีเมลหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="email" id="editAgencyEmail"></div>
+    <div class="form-group"><label>Website หน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="text" id="editAgencyWebsite"></div>
     <div class="form-group"><label>จังหวัด (ของหน่วยงานเจ้าของโครงการ)<span class="required">*</span></label><select id="editProvince"></select></div>
     <div class="form-group"><label>Note</label><textarea id="editNote"></textarea></div>
     <div class="form-group">
@@ -262,7 +264,7 @@ function init() {
 
 // ===================== LIST + FILTER =====================
 async function loadVendors() {
-  nameList.innerHTML = '<div class="empty-state">กำลังโหลดรายชื่อ...</div>';
+  nameList.innerHTML = '<div class="empty-state loading-inline"><span class="spinner"></span>กำลังโหลดรายชื่อ...</div>';
   try {
     const data = await apiGet('listVendors', {});
     allRows = (data.success && data.rows) ? data.rows : [];
@@ -317,8 +319,13 @@ function renderList(rows) {
     return;
   }
   nameList.innerHTML = rows.map(r => {
-    const tags = [r.province, r.project_name, r.agency_name]
-      .filter(Boolean).map(t => '<span class="tag">'+esc(t)+'</span>').join('');
+    const infoRows = [
+      ['รับงานที่จังหวัด', r.province],
+      ['ชื่อโครงการที่ทิ้งงาน', r.project_name],
+      ['ชื่อหน่วยงานเจ้าของโครงการ', r.agency_name]
+    ].filter(([label, val]) => val)
+     .map(([label, val]) => '<div class="info-row"><span class="info-label">'+esc(label)+' :</span>'+esc(val)+'</div>')
+     .join('');
     return '<div class="name-card">' +
       '<div class="card-top">' +
         '<div class="fullname">'+esc(r.company_name)+'</div>' +
@@ -327,7 +334,7 @@ function renderList(rows) {
           '<button class="note-btn" onclick="handleNoteClick(\''+esc(r.no)+'\')">Note</button>' +
         '</div>' +
       '</div>' +
-      (tags ? '<div class="tags">'+tags+'</div>' : '') +
+      (infoRows ? '<div class="info-list">'+infoRows+'</div>' : '') +
       (r.update_date ? '<div class="update-date">อัพเดทข้อมูลเมื่อ '+esc(r.update_date)+'</div>' : '') +
     '</div>';
   }).join('');
@@ -532,6 +539,12 @@ async function submitEdit() {
   const company_name = editCompanyName.value.trim();
   const phone = editPhone.value.trim();
   if (!company_name) { editErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
+  if (!editProjectName.value.trim()) { editErr.textContent = 'กรุณากรอกชื่อโครงการที่ทิ้งงาน'; return; }
+  if (!editAgencyName.value.trim()) { editErr.textContent = 'กรุณากรอกชื่อหน่วยงานเจ้าของโครงการ'; return; }
+  if (!editAgencyAddress.value.trim()) { editErr.textContent = 'กรุณากรอกที่ตั้งหน่วยงานเจ้าของโครงการ'; return; }
+  if (!editAgencyPhone.value.trim()) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง'; return; }
+  if (!editAgencyEmail.value.trim()) { editErr.textContent = 'กรุณากรอกอีเมลหน่วยงานผู้ว่าจ้าง'; return; }
+  if (!editAgencyWebsite.value.trim()) { editErr.textContent = 'กรุณากรอก Website หน่วยงานผู้ว่าจ้าง'; return; }
   if (!phone) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
   if (!/^[0-9]{9,10}$/.test(phone)) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'; return; }
   if (!editProvince.value) { editErr.textContent = 'กรุณาเลือกจังหวัด'; return; }

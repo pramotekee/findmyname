@@ -91,6 +91,7 @@
   .name-card button.note-btn{background:#3E9AE8;color:#fff}
 
   .empty-state{text-align:center;color:var(--text-secondary);padding:40px 20px;font-size:14px}
+  .empty-state.loading-inline{display:flex;align-items:center;justify-content:center;gap:8px}
 
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:100}
   .modal-overlay.hidden{display:none}
@@ -313,7 +314,7 @@ function init() {
 
 // ===================== LIST + FILTER =====================
 async function loadNames() {
-  nameList.innerHTML = '<div class="empty-state">กำลังโหลดรายชื่อ...</div>';
+  nameList.innerHTML = '<div class="empty-state loading-inline"><span class="spinner"></span>กำลังโหลดรายชื่อ...</div>';
   try {
     const data = await apiGet('list', {});
     allRows = (data.success && data.rows) ? data.rows : [];

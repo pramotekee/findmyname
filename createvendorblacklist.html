@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find My Name — เพิ่มรายชื่อผู้รับจ้างทิ้งงาน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,700;1,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F4F2;
+    --surface:#FFFFFF;
+    --accent:#FFC93C;
+    --accent-dark:#E8B62E;
+    --text-primary:#1A1A1A;
+    --text-secondary:#7A7A7A;
+    --border:#E2E2E0;
+    --error:#E74C3C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text-primary);padding:24px 16px 60px}
+  .wrap{max-width:480px;margin:0 auto}
+  a.back{display:inline-block;color:var(--text-secondary);font-size:13px;text-decoration:none;margin-bottom:14px}
+  header{text-align:center;margin-bottom:18px}
+  header h1{font-style:italic;font-weight:800;font-size:28px}
+  header p{color:var(--text-secondary);font-size:13px;margin-top:4px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px}
+  .section-label{font-weight:700;font-size:14px;margin:18px 0 10px;padding-top:10px;border-top:1px solid var(--border)}
+  .section-label:first-child{margin-top:0;padding-top:0;border-top:0}
+  .form-group{margin-bottom:16px}
+  .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
+  .form-group label .required{color:var(--error);margin-left:2px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
+  .form-group textarea{min-height:70px;resize:vertical}
+  .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
+  .err{color:var(--error);font-size:12px;min-height:16px;margin:8px 0}
+  button{width:100%;padding:14px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  button:disabled{opacity:.7;cursor:not-allowed}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100}
+  .modal-overlay.hidden{display:none}
+  .modal{background:var(--surface);width:calc(100% - 32px);max-width:420px;border-radius:24px;padding:26px 22px 30px;text-align:center}
+  .modal h3{font-size:20px;font-weight:700;margin-bottom:6px}
+  .modal p.hint{color:var(--text-secondary);font-size:13px;margin:10px 0}
+  .passcode-display{font-size:30px;font-weight:800;letter-spacing:4px;color:var(--accent-dark);background:var(--bg);border-radius:14px;padding:16px;margin:14px 0}
+  .copy-btn{background:#1A1A1A !important;color:#fff !important;font-size:13px !important;padding:10px !important}
+  .spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,.25);border-top-color:#1A1A1A;border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="vendorblacklist.html">← กลับไปหน้ารายชื่อผู้รับจ้างทิ้งงาน</a>
+  <header>
+    <h1>Find My Name</h1>
+    <p>เพิ่มรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ</p>
+  </header>
+
+  <div class="card">
+    <div class="section-label">ข้อมูลบริษัทผู้รับจ้าง</div>
+    <div class="form-group"><label>ชื่อบริษัทผู้รับจ้าง<span class="required">*</span></label><input type="text" id="cCompanyName"></div>
+    <div class="form-group"><label>ที่ตั้งบริษัท</label><input type="text" id="cCompanyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อบริษัท</label><input type="tel" id="cCompanyPhone"></div>
+    <div class="form-group"><label>อีเมลบริษัท</label><input type="email" id="cCompanyEmail"></div>
+    <div class="form-group"><label>Website บริษัท</label><input type="text" id="cCompanyWebsite"></div>
+
+    <div class="section-label">ข้อมูลโครงการที่ทิ้งงาน</div>
+    <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน</label><input type="text" id="cProjectName"></div>
+    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ</label><input type="text" id="cAgencyName"></div>
+    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ</label><input type="text" id="cAgencyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงาน</label><input type="tel" id="cAgencyPhone"></div>
+    <div class="form-group"><label>อีเมลหน่วยงาน</label><input type="email" id="cAgencyEmail"></div>
+    <div class="form-group"><label>Website หน่วยงาน</label><input type="text" id="cAgencyWebsite"></div>
+    <div class="form-group"><label>จังหวัด (ของหน่วยงานเจ้าของโครงการ)<span class="required">*</span></label><select id="cProvince"></select></div>
+
+    <div class="section-label">อื่นๆ</div>
+    <div class="form-group"><label>Note</label><textarea id="cNote" placeholder="รายละเอียดเพิ่มเติม เช่น อ้างอิงประกาศทางการ, ลิงก์ข่าว ฯลฯ"></textarea></div>
+    <div class="form-group">
+      <label>หมายเลขโทรศัพท์ของคุณ<span class="required">*</span></label>
+      <input type="tel" id="cPhone">
+      <small>ใช้สำหรับ login เข้ามาแก้ไขข้อมูลนี้ในครั้งถัดไปเท่านั้น จะไม่แสดงต่อสาธารณะ (เป็นคนละคู่ล็อกอินกับคอนเทนต์อื่นในเว็บนี้)</small>
+    </div>
+    <div class="err" id="cErr"></div>
+    <button id="createSubmitBtn" onclick="submitCreate()"><span id="createSubmitLabel">เพิ่มรายชื่อ</span></button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="successModal">
+  <div class="modal">
+    <h3>เพิ่มรายชื่อสำเร็จ</h3>
+    <p class="hint">เก็บรหัสผ่านนี้ไว้ให้ดี ใช้คู่กับหมายเลขโทรศัพท์ของคุณสำหรับแก้ไขข้อมูลครั้งถัดไป</p>
+    <div class="passcode-display" id="successPasscode"></div>
+    <button class="copy-btn" onclick="copyPasscode()" id="copyPasscodeBtn">📋 คัดลอกรหัสผ่าน</button>
+    <button onclick="location.href='vendorblacklist.html'">กลับหน้ารายชื่อ</button>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdJjKdDXSautMm402qTkwccQbN3etPvf-WfqWwQgzlW1sjMb-9uv_20xvufEoKTsCU/exec';
+
+const PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
+
+function populateSelect(el, values, placeholder) {
+  el.innerHTML = (placeholder ? '<option value="">'+placeholder+'</option>' : '') +
+    values.map(v => '<option value="'+v+'">'+v+'</option>').join('');
+}
+populateSelect(cProvince, PROVINCES, '— เลือก —');
+
+async function submitCreate() {
+  cErr.textContent = '';
+  const company_name = cCompanyName.value.trim();
+  const phone = cPhone.value.trim();
+  if (!company_name) { cErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
+  if (!phone) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
+  if (!/^[0-9]{9,10}$/.test(phone)) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'; return; }
+  if (!cProvince.value) { cErr.textContent = 'กรุณาเลือกจังหวัด'; return; }
+
+  const payload = {
+    action: 'createVendorRow',
+    company_name,
+    company_address: cCompanyAddress.value.trim(),
+    company_phone: cCompanyPhone.value.trim(),
+    company_email: cCompanyEmail.value.trim(),
+    company_website: cCompanyWebsite.value.trim(),
+    project_name: cProjectName.value.trim(),
+    agency_name: cAgencyName.value.trim(),
+    agency_address: cAgencyAddress.value.trim(),
+    agency_phone: cAgencyPhone.value.trim(),
+    agency_email: cAgencyEmail.value.trim(),
+    agency_website: cAgencyWebsite.value.trim(),
+    province: cProvince.value,
+    note: cNote.value,
+    phone
+  };
+
+  createSubmitBtn.disabled = true;
+  createSubmitLabel.innerHTML = '<span class="spinner"></span>กำลังบันทึก...';
+  try {
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (!data.success) { cErr.textContent = data.error || 'บันทึกไม่สำเร็จ'; return; }
+    successPasscode.textContent = data.passcode;
+    successModal.classList.remove('hidden');
+  } catch (err) {
+    cErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  } finally {
+    createSubmitBtn.disabled = false;
+    createSubmitLabel.textContent = 'เพิ่มรายชื่อ';
+  }
+}
+
+function copyPasscode() {
+  const text = successPasscode.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    copyPasscodeBtn.textContent = '✅ คัดลอกแล้ว';
+    setTimeout(() => { copyPasscodeBtn.textContent = '📋 คัดลอกรหัสผ่าน'; }, 1800);
+  }).catch(() => {
+    copyPasscodeBtn.textContent = 'คัดลอกไม่สำเร็จ ลองกดค้างเพื่อคัดลอกเอง';
+  });
+}
+</script>
+
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+
+</body>
+</html>

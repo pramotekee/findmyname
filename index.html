@@ -41,10 +41,11 @@
   header h1{font-style:italic;font-weight:800;font-size:34px;letter-spacing:-0.5px;color:#1A1A1A}
   header p.sub{color:#1A1A1A;font-size:13px;margin-top:4px}
 
-  /* ===== Reserved: multi-project pill switcher (dormant — see loadProjects() near bottom) ===== */
-  #projectPills{display:none;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
-  #projectPills .pill{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer}
-  #projectPills .pill.active{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+  /* ===== Project pill switcher — each pill links to its own standalone content file ===== */
+  #projectPills{display:flex;gap:8px;margin-top:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 2px 6px;scrollbar-width:none}
+  #projectPills::-webkit-scrollbar{display:none}
+  #projectPills a.pill{flex:0 0 auto;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:var(--text-primary);white-space:nowrap}
+  #projectPills a.pill.active{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
 
   #heroBanner{max-width:480px;margin:0 auto;overflow:hidden;position:relative;aspect-ratio:2.2/1;border-radius:0;display:none}
   #bannerTrack{display:flex;height:100%;touch-action:pan-y}
@@ -129,8 +130,11 @@
   <header>
     <h1>Find My Name</h1>
     <p class="sub">พลังสังคมไทยไม่ทนต่อการทุจริต - ขอขอบคุณข้อมูลจาก Facebook Page ชมรมSTRONGต้านทุจริตประเทศไทย</p>
-    <!-- Reserved for future multi-project pill switcher, see loadProjects() -->
-    <div id="projectPills"></div>
+    <!-- แต่ละ pill = ไฟล์คอนเทนต์ของตัวเอง แยกไฟล์เด็ดขาด ถ้าไฟล์ไหนพังจะไม่กระทบไฟล์อื่น -->
+    <div id="projectPills">
+      <a class="pill active" href="index.html">รายชื่อผู้สอบบรรจุข้าราชการ (ปี 68-69)</a>
+      <a class="pill" href="vendorblacklist.html">รายชื่อผู้รับจ้างทิ้งงานภาครัฐ</a>
+    </div>
   </header>
   <div class="wrap">
     <div id="heroBanner"><div id="bannerTrack"></div></div>
@@ -298,7 +302,6 @@ function init() {
 
   loadNames();
   loadBanners();
-  // loadProjects(); // reserved — uncomment when the "project" column + pill switcher are ready to go live
 
   [searchInput, filterLetter, filterRole, filterRegion, filterDistric, filterProvince]
     .forEach(el => el.addEventListener('input', applyFilters));
@@ -421,7 +424,7 @@ const BANNER_SPEED_PX_PER_SEC = 40;
 
 async function loadBanners() {
   try {
-    const data = await apiGet('getBanners', {});
+    const data = await apiGet('getBanners', { project: 'โกงสอบ' });
     if (data.success && data.banners && data.banners.length > 0) {
       renderBanners(data.banners);
       heroBanner.style.display = 'block';
@@ -653,28 +656,6 @@ async function submitEdit() {
     setButtonLoading(editSubmitBtn, editSubmitLabel, false, '', 'ยืนยันบันทึกข้อมูล');
   }
 }
-
-// ===================== RESERVED: multi-project pill switcher =====================
-// Not active yet. Once you add a "project" column to the "name" sheet and
-// fill it in, uncomment loadProjects() in init() above — this will start
-// rendering pills automatically, no other change needed.
-/*
-async function loadProjects() {
-  try {
-    const data = await apiGet('getProjects', {});
-    if (data.success && data.projects && data.projects.length > 1) {
-      projectPills.style.display = 'flex';
-      projectPills.innerHTML = data.projects.map(p =>
-        '<div class="pill" onclick="selectProject(\''+esc(p)+'\')">'+esc(p)+'</div>'
-      ).join('');
-    }
-  } catch (err) { }
-}
-function selectProject(p) {
-  // filter allRows by a "project" field once it's returned from listNames(),
-  // or refetch with ?project=... — wire this up when the feature goes live
-}
-*/
 
 window.addEventListener('scroll', () => {
   document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);

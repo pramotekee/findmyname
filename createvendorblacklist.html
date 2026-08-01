@@ -65,12 +65,12 @@
     <div class="form-group"><label>Website บริษัท</label><input type="text" id="cCompanyWebsite"></div>
 
     <div class="section-label">ข้อมูลโครงการที่ทิ้งงาน</div>
-    <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน</label><input type="text" id="cProjectName"></div>
-    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ</label><input type="text" id="cAgencyName"></div>
-    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ</label><input type="text" id="cAgencyAddress"></div>
-    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงาน</label><input type="tel" id="cAgencyPhone"></div>
-    <div class="form-group"><label>อีเมลหน่วยงาน</label><input type="email" id="cAgencyEmail"></div>
-    <div class="form-group"><label>Website หน่วยงาน</label><input type="text" id="cAgencyWebsite"></div>
+    <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน<span class="required">*</span></label><input type="text" id="cProjectName"></div>
+    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="cAgencyName"></div>
+    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="cAgencyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="tel" id="cAgencyPhone"></div>
+    <div class="form-group"><label>อีเมลหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="email" id="cAgencyEmail"></div>
+    <div class="form-group"><label>Website หน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="text" id="cAgencyWebsite"></div>
     <div class="form-group"><label>จังหวัด (ของหน่วยงานเจ้าของโครงการ)<span class="required">*</span></label><select id="cProvince"></select></div>
 
     <div class="section-label">อื่นๆ</div>
@@ -111,6 +111,12 @@ async function submitCreate() {
   const company_name = cCompanyName.value.trim();
   const phone = cPhone.value.trim();
   if (!company_name) { cErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
+  if (!cProjectName.value.trim()) { cErr.textContent = 'กรุณากรอกชื่อโครงการที่ทิ้งงาน'; return; }
+  if (!cAgencyName.value.trim()) { cErr.textContent = 'กรุณากรอกชื่อหน่วยงานเจ้าของโครงการ'; return; }
+  if (!cAgencyAddress.value.trim()) { cErr.textContent = 'กรุณากรอกที่ตั้งหน่วยงานเจ้าของโครงการ'; return; }
+  if (!cAgencyPhone.value.trim()) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง'; return; }
+  if (!cAgencyEmail.value.trim()) { cErr.textContent = 'กรุณากรอกอีเมลหน่วยงานผู้ว่าจ้าง'; return; }
+  if (!cAgencyWebsite.value.trim()) { cErr.textContent = 'กรุณากรอก Website หน่วยงานผู้ว่าจ้าง'; return; }
   if (!phone) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
   if (!/^[0-9]{9,10}$/.test(phone)) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'; return; }
   if (!cProvince.value) { cErr.textContent = 'กรุณาเลือกจังหวัด'; return; }

@@ -9,14 +9,14 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานต่างๆ">
 <meta property="og:description" content="ประกาศรายชื่อผู้รับจ้างที่ทิ้งงานต่างๆ ทั้งภาครัฐ, เอกชน และบุคคลทั่วไปที่เจอผู้รับจ้างทิ้งงาน">
-<meta property="og:image" content="https://drive.google.com/thumbnail?id=1dxawU_s-iku6lbLmC9M6zPprrtirKNYo&sz=w1200">
+<meta property="og:image" content="https://drive.google.com/thumbnail?id=1P0MJktfxI3mMazrxBBryLSi7pkXRppCr&sz=w1600">
 <meta property="og:url" content="https://findmyname.vercel.app/vendorblacklist.html">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานต่างๆ">
 <meta name="twitter:description" content="ประกาศรายชื่อผู้รับจ้างที่ทิ้งงานต่างๆ ทั้งภาครัฐ, เอกชน และบุคคลทั่วไปที่เจอผู้รับจ้างทิ้งงาน">
-<meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1dxawU_s-iku6lbLmC9M6zPprrtirKNYo&sz=w1200">
+<meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1P0MJktfxI3mMazrxBBryLSi7pkXRppCr&sz=w1600">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,700;1,800&display=swap" rel="stylesheet">
@@ -87,7 +87,7 @@
   .name-card .card-actions{flex-shrink:0;display:flex;gap:6px}
   .name-card .info-list{display:flex;flex-direction:column;gap:5px;margin-top:10px}
   .name-card .info-row{font-size:13px;line-height:1.5;color:var(--text-primary)}
-  .name-card .info-row .info-label{color:var(--text-secondary);margin-right:4px}
+  .name-card .info-label{color:var(--text-secondary);margin-right:4px}
   .name-card .exec-names{margin-top:6px;font-size:13px;color:var(--text-primary);line-height:1.5}
   .name-card .update-date{margin-top:10px;font-size:11px;color:var(--text-secondary);opacity:.75}
   .name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
@@ -207,16 +207,16 @@
     <div class="form-group"><label>Website บริษัท</label><input type="text" id="editCompanyWebsite"></div>
     <div class="section-label">ผู้บริหารบริษัท (กรอกอย่างน้อย 1 ราย)</div>
     <div class="exec-row">
-      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 1)</label><input type="text" id="editFirstname1"></div>
-      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 1)</label><input type="text" id="editLastname1"></div>
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 1)<span class="required">*</span></label><input type="text" id="editFirstname1" placeholder="ไม่ต้องใส่คำนำหน้า นาย นาง นางสาว"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 1)<span class="required">*</span></label><input type="text" id="editLastname1" placeholder="ไม่ต้องใส่คำนำหน้า นาย นาง นางสาว"></div>
     </div>
     <div class="exec-row">
-      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 2)</label><input type="text" id="editFirstname2"></div>
-      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 2)</label><input type="text" id="editLastname2"></div>
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 2)</label><input type="text" id="editFirstname2" placeholder="ไม่ต้องใส่คำนำหน้า นาย นาง นางสาว"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 2)</label><input type="text" id="editLastname2" placeholder="ไม่ต้องใส่คำนำหน้า นาย นาง นางสาว"></div>
     </div>
     <div class="exec-row">
-      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 3)</label><input type="text" id="editFirstname3"></div>
-      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 3)</label><input type="text" id="editLastname3"></div>
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 3)</label><input type="text" id="editFirstname3" placeholder="ไม่ต้องใส่คำนำหน้า นาย นาง นางสาว"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 3)</label><input type="text" id="editLastname3" placeholder="ไม่ต้องใส่คำนำหน้า นาย นาง นางสาว"></div>
     </div>
     <div class="section-label">ข้อมูลโครงการที่ทิ้งงาน</div>
     <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน<span class="required">*</span></label><input type="text" id="editProjectName"></div>
@@ -432,7 +432,7 @@ function renderList(rows) {
           '<button class="note-btn" onclick="handleNoteClick(\''+esc(r.no)+'\')">Note</button>' +
         '</div>' +
       '</div>' +
-      (execNames ? '<div class="exec-names">ผู้บริหารบริษัท : '+esc(execNames)+'</div>' : '') +
+      (execNames ? '<div class="exec-names"><span class="info-label">ผู้บริหารบริษัท :</span>'+esc(execNames)+'</div>' : '') +
       (infoRows ? '<div class="info-list">'+infoRows+'</div>' : '') +
       dateLines +
       '<button class="share-btn" id="shareBtn-'+esc(r.no)+'" onclick="handleShareClick(\''+esc(r.no)+'\')">🔗 Share</button>' +
@@ -460,7 +460,12 @@ function handleShareClick(no) {
   const shareUrl = window.location.origin + window.location.pathname + '?no=' + encodeURIComponent(no);
   const shareText = 'ดูรายชื่อผู้รับจ้างทิ้งงาน เพื่อลดโอกาสเกิดความผิดพลาดในการจ้างทำงานของคุณ';
 
-  if (navigator.share) {
+  // จำกัด native share sheet ไว้เฉพาะมือถือ/แท็บเล็ตจริงๆ เท่านั้น เพราะ desktop browser
+  // บางตัว (เช่น Chrome/Edge บน Windows) ก็รองรับ navigator.share() เหมือนกัน แต่แอปปลายทาง
+  // (เช่น LINE) ตีความ field text/url ไม่เหมือนกับบนมือถือ ทำให้ลำดับข้อความสลับกัน
+  // — บน desktop จึงบังคับให้ใช้ clipboard เสมอ เพื่อควบคุมลำดับ "ข้อความก่อน link" ให้แน่นอน
+  const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (navigator.share && isMobileDevice) {
     navigator.share({ title: 'Find My Name', text: shareText, url: shareUrl }).catch(() => {});
     return;
   }

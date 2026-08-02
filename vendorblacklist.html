@@ -58,6 +58,7 @@
   .instructions .inline-tag{display:inline-block;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px}
   .instructions .inline-tag.blue{background:#3E9AE8;color:#fff}
   .instructions .announce-box{background:#FBE9E7;border:1px solid #F3C4BD;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.7;color:#1A1A1A}
+  .instructions .announce-box .inline-login-btn{background:#1A1A1A;color:#fff;border:none;font-weight:700;font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;margin-left:2px}
 
   #backToTop{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:50%;background:#1A1A1A;color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:90;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
   #backToTop.show{opacity:1;visibility:visible}
@@ -80,8 +81,7 @@
   .name-card .info-row{font-size:13px;line-height:1.5;color:var(--text-primary)}
   .name-card .info-row .info-label{color:var(--text-secondary);margin-right:4px}
   .name-card .update-date{margin-top:10px;font-size:11px;color:var(--text-secondary);opacity:.75}
-  .name-card button.edit-btn,.name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
-  .name-card button.edit-btn{background:var(--accent);color:#1A1A1A}
+  .name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
   .name-card button.note-btn{background:#3E9AE8;color:#fff}
 
   .empty-state{text-align:center;color:var(--text-secondary);padding:40px 20px;font-size:14px}
@@ -137,11 +137,11 @@
       หากทราบชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการแล้วว่าเป็นผู้ทิ้งงาน สามารถเผยแพร่ชื่อผู้รับจ้าง และข้อมูลต่างๆ ได้ที่นี่<br>
       <a class="inline-create-btn" href="createvendorblacklist.html">+ Create</a>
     </div>
-    <div class="announce-box">หากคุณพบข้อมูลผิดพลาด หรือมีรายละเอียดเพิ่มเติมที่อยากแก้ไข สามารถกดแก้ไขได้ที่ <span class="inline-tag">Edit</span> บนแต่ละชื่อผู้รับจ้าง</div>
+    <div class="announce-box">เคยเพิ่มรายชื่อไว้แล้ว และต้องการแก้ไขข้อมูล? <button class="inline-login-btn" onclick="openOwnerLogin()">เข้าสู่ระบบเพื่อแก้ไข</button></div>
   </div>
 
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="พิมพ์ชื่อบริษัทผู้รับจ้าง...">
+    <input type="text" id="searchInput" placeholder="พิมพ์คำค้นหา เช่น ชื่อบริษัท, จังหวัด, ชื่อโครงการ, ชื่อหน่วยงาน...">
     <div class="filters">
       <select id="filterLetter"><option value="">ก-ฮ (ทั้งหมด)</option></select>
       <select id="filterProvince"><option value="">จังหวัดหน่วยงาน (ทั้งหมด)</option></select>
@@ -156,11 +156,12 @@
 
 <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="กลับขึ้นด้านบน">↑</button>
 
-<!-- ===== LOGIN MODAL ===== -->
+<!-- ===== LOGIN MODAL (owner-initiated — works from any device, not tied to any card) ===== -->
 <div class="modal-overlay hidden" id="loginModal">
   <div class="modal">
-    <h3>ยืนยันตัวตน</h3>
-    <p class="hint">รายชื่อนี้เคยถูกเข้ามาเพิ่มเติม หรือแก้ไขข้อมูลไปแล้ว กรุณากรอกหมายเลขโทรศัพท์และรหัสผ่านที่เคยได้รับตอนแก้ไขครั้งแรก</p>
+    <h3>เข้าสู่ระบบเพื่อแก้ไขข้อมูล</h3>
+    <p class="hint">กรอกชื่อบริษัทผู้รับจ้างตามที่เคยลงทะเบียนไว้ พร้อมหมายเลขโทรศัพท์และรหัสผ่านที่เคยได้รับ</p>
+    <div class="form-group"><label>ชื่อบริษัทผู้รับจ้าง</label><input type="text" id="loginCompanyName"></div>
     <div class="form-group"><label>หมายเลขโทรศัพท์</label><input type="tel" id="loginPhone"></div>
     <div class="form-group"><label>รหัสผ่าน (8 หลัก)</label><input type="text" id="loginPasscode"></div>
     <div class="err" id="loginErr"></div>
@@ -229,9 +230,8 @@ const THAI_LETTERS = ['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ
 const PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
 
 let allRows = [];
-let pendingEditNo = null;   // "no" (venN) ของแถวที่กำลัง login/edit อยู่
+let pendingEditNo = null;   // "no" (venN) ของแถวที่ล็อกอินสำเร็จ กำลังแก้ไขอยู่
 let currentAuth = null;     // { phone, passcode } หลัง login สำเร็จ
-let isFirstTimeClaim = false;
 
 // ===================== API HELPERS =====================
 async function apiGet(action, params) {
@@ -274,17 +274,36 @@ async function loadVendors() {
   }
 }
 
+// คำนำหน้าชื่อนิติบุคคลที่พบบ่อย — ต้องตัดออกก่อนเทียบตัวอักษรแรก ไม่งั้นทุกบริษัท
+// จะไปกองอยู่ที่ตัว "บ" (บริษัท) หมด ทำให้ filter ก-ฮ ไม่มีประโยชน์
+const COMPANY_PREFIXES = ['ห้างหุ้นส่วนสามัญนิติบุคคล','ห้างหุ้นส่วนสามัญ','ห้างหุ้นส่วนจำกัด','บริษัท','บจก.','บจก','หจก.','หจก','กิจการร่วมค้า','ร้าน'];
+function coreCompanyName(name) {
+  let s = String(name || '').trim();
+  for (const p of COMPANY_PREFIXES) {
+    if (s.startsWith(p)) { s = s.slice(p.length).trim(); break; }
+  }
+  return s;
+}
+
+// รวมทุกฟิลด์ของแถวเป็นข้อความเดียว เพื่อให้ search box เป็น universal search
+// — พิมพ์อะไรก็ได้ที่เกี่ยวข้อง ไม่ว่าจะเป็นชื่อบริษัท ที่อยู่ เบอร์โทร อีเมล เว็บไซต์
+// ชื่อโครงการ ชื่อหน่วยงาน จังหวัด หรือ note ก็ค้นเจอทั้งหมด ไม่จำกัดแค่ชื่อบริษัท
+function vendorSearchBlob(r) {
+  return [
+    r.company_name, r.company_address, r.company_phone, r.company_email, r.company_website,
+    r.project_name, r.agency_name, r.agency_address, r.agency_phone, r.agency_email, r.agency_website,
+    r.province, r.note
+  ].filter(Boolean).join(' ').toLowerCase();
+}
+
 function applyFilters() {
   const q = searchInput.value.trim().toLowerCase();
   const letter = filterLetter.value;
   const province = filterProvince.value;
 
   const filtered = allRows.filter(r => {
-    if (q) {
-      const name = String(r.company_name).toLowerCase();
-      if (!name.includes(q)) return false;
-    }
-    if (letter && !String(r.company_name).startsWith(letter)) return false;
+    if (q && !vendorSearchBlob(r).includes(q)) return false;
+    if (letter && !coreCompanyName(r.company_name).startsWith(letter)) return false;
     if (province && r.province !== province) return false;
     return true;
   });
@@ -330,7 +349,6 @@ function renderList(rows) {
       '<div class="card-top">' +
         '<div class="fullname">'+esc(r.company_name)+'</div>' +
         '<div class="card-actions">' +
-          '<button class="edit-btn" onclick="handleEditClick(\''+esc(r.no)+'\')">Edit</button>' +
           '<button class="note-btn" onclick="handleNoteClick(\''+esc(r.no)+'\')">Note</button>' +
         '</div>' +
       '</div>' +
@@ -468,43 +486,28 @@ function openModal(id) {
   document.getElementById(id).classList.remove('hidden');
 }
 
-function handleEditClick(no) {
-  const row = allRows.find(r => String(r.no) === String(no));
-  if (!row) return;
-  pendingEditNo = no;
-  currentAuth = null;
-
-  if (row.hasPasscode) {
-    // เคยมีคนแก้ไขไปแล้ว — ต้องยืนยันเบอร์โทร + รหัสผ่านก่อน
-    loginErr.textContent = '';
-    loginPhone.value = '';
-    loginPasscode.value = '';
-    openModal('loginModal');
-  } else {
-    // ยังไม่เคยมีใครแก้ไขแถวนี้มาก่อน — เปิดฟอร์มแก้ไขได้ตรงๆ ไม่ต้อง auth
-    isFirstTimeClaim = true;
-    openEditForm({
-      no: row.no, company_name: row.company_name, company_address: '', company_phone: '',
-      company_email: '', company_website: '', project_name: '', agency_name: '',
-      agency_address: '', agency_phone: '', agency_email: '', agency_website: '',
-      province: '', note: '', phone: ''
-    });
-    editHint.textContent = 'ยังไม่มีใครแก้ไขรายการนี้มาก่อน — กรอกข้อมูลที่เหลือให้ครบ';
-  }
+function openOwnerLogin() {
+  loginErr.textContent = '';
+  loginCompanyName.value = '';
+  loginPhone.value = '';
+  loginPasscode.value = '';
+  openModal('loginModal');
 }
 
 async function submitLogin() {
   loginErr.textContent = '';
+  const company_name = loginCompanyName.value.trim();
   const phone = loginPhone.value.trim();
   const passcode = loginPasscode.value.trim();
+  if (!company_name) { loginErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
   if (!phone || !passcode) { loginErr.textContent = 'กรุณากรอกเบอร์โทรและรหัสผ่านให้ครบ'; return; }
 
   setButtonLoading(loginSubmitBtn, loginSubmitLabel, true, 'กำลังค้นหา...', 'เข้าสู่ระบบ');
   try {
-    const data = await apiPost({ action: 'loginVendor', no: pendingEditNo, phone, passcode });
+    const data = await apiPost({ action: 'loginVendor', company_name, phone, passcode });
     if (!data.success) { loginErr.textContent = data.error || 'เข้าสู่ระบบไม่สำเร็จ'; return; }
+    pendingEditNo = data.data.no;
     currentAuth = { phone, passcode };
-    isFirstTimeClaim = false;
     closeModal('loginModal');
     openEditForm(data.data);
     editHint.textContent = 'แก้ไขข้อมูลได้เลย';

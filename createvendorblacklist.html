@@ -36,6 +36,9 @@
   .form-group label .required{color:var(--error);margin-left:2px}
   .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
   .form-group textarea{min-height:70px;resize:vertical}
+  @media (max-width:600px){
+    .form-group textarea{min-height:140px}
+  }
   .form-group small{display:block;margin-top:5px;font-size:11px;color:var(--text-secondary);line-height:1.5}
   .err{color:var(--error);font-size:12px;min-height:16px;margin:8px 0}
   button{width:100%;padding:14px;border:0;border-radius:14px;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
@@ -76,15 +79,15 @@
     <div class="section-label">ผู้บริหารบริษัท (กรอกอย่างน้อย 1 ราย)</div>
     <div class="exec-row">
       <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 1)<span class="required">*</span></label><input type="text" id="cFirstname1" placeholder="ไม่ต้องใส่คำนำหน้า พิมพ์ชื่อได้เลย"></div>
-      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 1)<span class="required">*</span></label><input type="text" id="cLastname1" placeholder="พิมพ์นามสกุลได้เลย"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 1)<span class="required">*</span></label><input type="text" id="cLastname1" placeholder=""></div>
     </div>
     <div class="exec-row">
       <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 2)</label><input type="text" id="cFirstname2" placeholder="ไม่ต้องใส่คำนำหน้า พิมพ์ชื่อได้เลย"></div>
-      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 2)</label><input type="text" id="cLastname2" placeholder="พิมพ์นามสกุลได้เลย"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 2)</label><input type="text" id="cLastname2" placeholder=""></div>
     </div>
     <div class="exec-row">
       <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 3)</label><input type="text" id="cFirstname3" placeholder="ไม่ต้องใส่คำนำหน้า พิมพ์ชื่อได้เลย"></div>
-      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 3)</label><input type="text" id="cLastname3" placeholder="พิมพ์นามสกุลได้เลย"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 3)</label><input type="text" id="cLastname3" placeholder=""></div>
     </div>
 
     <div class="section-label">ข้อมูลโครงการที่ทิ้งงาน</div>
@@ -97,7 +100,7 @@
     <div class="form-group"><label>จังหวัด (ของที่ตั้งโครงการ)<span class="required">*</span></label><select id="cProvince"></select></div>
 
     <div class="section-label">อื่นๆ</div>
-    <div class="form-group"><label>Note</label><textarea id="cNote" placeholder="รายละเอียดเพิ่มเติม เช่น อ้างอิงประกาศทางการ, ลิงก์ข่าว ฯลฯ"></textarea></div>
+    <div class="form-group"><label>Note</label><textarea id="cNote" placeholder="พิมพ์แจ้งรายละเอียดต่างๆ หรืออธิบายข้อมูลอื่นๆ ได้ตามต้องการ เพื่อเป็นประโยชน์ต่อผู้เข้าดูได้รับทราบ"></textarea></div>
     <div class="form-group">
       <label>หมายเลขโทรศัพท์ของคุณ<span class="required">*</span></label>
       <input type="tel" id="cPhone">

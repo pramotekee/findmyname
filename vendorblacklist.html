@@ -60,6 +60,11 @@
   .instructions .announce-box{background:#FBE9E7;border:1px solid #F3C4BD;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.7;color:#1A1A1A}
   .instructions .announce-box .inline-login-btn{background:#1A1A1A;color:#fff;border:none;font-weight:700;font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;margin-left:2px}
 
+  .owned-company-list{display:flex;flex-direction:column;gap:8px;margin:16px 0;max-height:50vh;overflow-y:auto}
+  .owned-company-list .owned-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:12px;padding:10px 14px}
+  .owned-company-list .owned-row .owned-name{font-weight:600;font-size:14px;text-align:left;min-width:0;overflow-wrap:anywhere}
+  .owned-company-list .owned-row button{width:auto;flex-shrink:0;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:13px;padding:8px 16px;margin:0}
+
   #backToTop{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:50%;background:#1A1A1A;color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:90;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
   #backToTop.show{opacity:1;visibility:visible}
 
@@ -156,17 +161,26 @@
 
 <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="กลับขึ้นด้านบน">↑</button>
 
-<!-- ===== LOGIN MODAL (owner-initiated — works from any device, not tied to any card) ===== -->
+<!-- ===== LOGIN MODAL (owner-initiated — works from any device, phone+code covers every company they created) ===== -->
 <div class="modal-overlay hidden" id="loginModal">
   <div class="modal">
     <h3>เข้าสู่ระบบเพื่อแก้ไขข้อมูล</h3>
-    <p class="hint">กรอกชื่อบริษัทผู้รับจ้างตามที่เคยลงทะเบียนไว้ พร้อมหมายเลขโทรศัพท์และรหัสผ่านที่เคยได้รับ</p>
-    <div class="form-group"><label>ชื่อบริษัทผู้รับจ้าง</label><input type="text" id="loginCompanyName"></div>
+    <p class="hint">กรอกหมายเลขโทรศัพท์และรหัสผ่านที่เคยได้รับ ระบบจะแสดงบริษัททั้งหมดที่คุณเคยเพิ่มไว้</p>
     <div class="form-group"><label>หมายเลขโทรศัพท์</label><input type="tel" id="loginPhone"></div>
     <div class="form-group"><label>รหัสผ่าน (8 หลัก)</label><input type="text" id="loginPasscode"></div>
     <div class="err" id="loginErr"></div>
     <button id="loginSubmitBtn" onclick="submitLogin()"><span id="loginSubmitLabel">เข้าสู่ระบบ</span></button>
     <button class="btn-secondary" onclick="closeModal('loginModal')">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- ===== SELECT COMPANY MODAL (shown when a phone owns more than one company) ===== -->
+<div class="modal-overlay hidden" id="selectCompanyModal">
+  <div class="modal">
+    <h3>เลือกบริษัทที่ต้องการแก้ไข</h3>
+    <p class="hint">พบรายชื่อที่คุณเคยเพิ่มไว้ กดแก้ไขบริษัทที่ต้องการ</p>
+    <div id="ownedCompanyList" class="owned-company-list"></div>
+    <button class="btn-secondary" onclick="closeModal('selectCompanyModal')">ปิด</button>
   </div>
 </div>
 
@@ -488,34 +502,55 @@ function openModal(id) {
 
 function openOwnerLogin() {
   loginErr.textContent = '';
-  loginCompanyName.value = '';
   loginPhone.value = '';
   loginPasscode.value = '';
   openModal('loginModal');
 }
 
+let ownedRows = []; // บริษัททั้งหมดที่เบอร์นี้ล็อกอินเข้ามาแล้วพบ (เก็บไว้ในหน่วยความจำระหว่างเซสชันนี้เท่านั้น)
+
 async function submitLogin() {
   loginErr.textContent = '';
-  const company_name = loginCompanyName.value.trim();
   const phone = loginPhone.value.trim();
   const passcode = loginPasscode.value.trim();
-  if (!company_name) { loginErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
   if (!phone || !passcode) { loginErr.textContent = 'กรุณากรอกเบอร์โทรและรหัสผ่านให้ครบ'; return; }
 
   setButtonLoading(loginSubmitBtn, loginSubmitLabel, true, 'กำลังค้นหา...', 'เข้าสู่ระบบ');
   try {
-    const data = await apiPost({ action: 'loginVendor', company_name, phone, passcode });
+    const data = await apiPost({ action: 'loginVendor', phone, passcode });
     if (!data.success) { loginErr.textContent = data.error || 'เข้าสู่ระบบไม่สำเร็จ'; return; }
-    pendingEditNo = data.data.no;
     currentAuth = { phone, passcode };
+    ownedRows = data.rows;
     closeModal('loginModal');
-    openEditForm(data.data);
-    editHint.textContent = 'แก้ไขข้อมูลได้เลย';
+    if (ownedRows.length === 1) {
+      selectCompanyToEdit(ownedRows[0].no);
+    } else {
+      renderOwnedCompanyList();
+      openModal('selectCompanyModal');
+    }
   } catch (err) {
     loginErr.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
   } finally {
     setButtonLoading(loginSubmitBtn, loginSubmitLabel, false, '', 'เข้าสู่ระบบ');
   }
+}
+
+function renderOwnedCompanyList() {
+  ownedCompanyList.innerHTML = ownedRows.map(r =>
+    '<div class="owned-row">' +
+      '<span class="owned-name">'+esc(r.company_name)+'</span>' +
+      '<button onclick="selectCompanyToEdit(\''+esc(r.no)+'\')">Edit</button>' +
+    '</div>'
+  ).join('');
+}
+
+function selectCompanyToEdit(no) {
+  const row = ownedRows.find(r => String(r.no) === String(no));
+  if (!row) return;
+  pendingEditNo = no;
+  closeModal('selectCompanyModal');
+  openEditForm(row);
+  editHint.textContent = 'แก้ไขข้อมูลได้เลย';
 }
 
 function openEditForm(row) {

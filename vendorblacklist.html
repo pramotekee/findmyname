@@ -65,6 +65,9 @@
   .owned-company-list .owned-row .owned-name{font-weight:600;font-size:14px;text-align:left;min-width:0;overflow-wrap:anywhere}
   .owned-company-list .owned-row button{width:auto;flex-shrink:0;background:var(--accent);color:#1A1A1A;font-weight:700;font-size:13px;padding:8px 16px;margin:0}
 
+  .create-link-btn{display:block;text-align:center;background:#61D836;color:#1A1A1A;text-decoration:none;font-weight:700;font-size:14px;padding:12px;border-radius:12px;margin-bottom:14px}
+  .create-link-btn.small{font-size:12px;padding:8px;margin-bottom:10px;margin-top:-4px}
+
   #backToTop{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:50%;background:#1A1A1A;color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:90;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
   #backToTop.show{opacity:1;visibility:visible}
 
@@ -178,7 +181,8 @@
 <div class="modal-overlay hidden" id="selectCompanyModal">
   <div class="modal">
     <h3>เลือกบริษัทที่ต้องการแก้ไข</h3>
-    <p class="hint">พบรายชื่อที่คุณเคยเพิ่มไว้ กดแก้ไขบริษัทที่ต้องการ</p>
+    <p class="hint">พบรายชื่อที่คุณเคยเพิ่มไว้ กดแก้ไขบริษัทที่ต้องการ หรือเพิ่มบริษัทใหม่ได้ที่ปุ่มด้านล่าง</p>
+    <a class="create-link-btn" href="createvendorblacklist.html">+ เพิ่มรายชื่อบริษัทใหม่</a>
     <div id="ownedCompanyList" class="owned-company-list"></div>
     <button class="btn-secondary" onclick="closeModal('selectCompanyModal')">ปิด</button>
   </div>
@@ -189,6 +193,7 @@
   <div class="modal">
     <h3>แก้ไขข้อมูลผู้รับจ้าง</h3>
     <p class="hint" id="editHint">ตรวจสอบและแก้ไขข้อมูลด้านล่างได้ตามต้องการ</p>
+    <a class="create-link-btn small" href="createvendorblacklist.html">+ เพิ่มรายชื่อบริษัทใหม่อีกราย</a>
     <div class="form-group"><label>ชื่อบริษัทผู้รับจ้าง<span class="required">*</span></label><input type="text" id="editCompanyName"></div>
     <div class="form-group"><label>ที่ตั้งบริษัท</label><input type="text" id="editCompanyAddress"></div>
     <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อบริษัท</label><input type="tel" id="editCompanyPhone"></div>
@@ -371,7 +376,8 @@ function renderList(rows) {
     const infoRows = [
       ['รับงานที่จังหวัด', r.province],
       ['ชื่อโครงการที่ทิ้งงาน', r.project_name],
-      ['ชื่อหน่วยงานเจ้าของโครงการ', r.agency_name]
+      ['ชื่อหน่วยงานเจ้าของโครงการ', r.agency_name],
+      ['หมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง', r.agency_phone]
     ].filter(([label, val]) => val)
      .map(([label, val]) => '<div class="info-row"><span class="info-label">'+esc(label)+' :</span>'+esc(val)+'</div>')
      .join('');

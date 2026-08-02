@@ -7,15 +7,15 @@
 
 <!-- Open Graph / social share preview -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานภาครัฐ">
-<meta property="og:description" content="รวมรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ">
+<meta property="og:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานต่างๆ">
+<meta property="og:description" content="ประกาศรายชื่อผู้รับจ้างที่ทิ้งงานต่างๆ ทั้งภาครัฐ, เอกชน และบุคคลทั่วไปที่เจอผู้รับจ้างทิ้งงาน">
 <meta property="og:image" content="https://drive.google.com/thumbnail?id=1dxawU_s-iku6lbLmC9M6zPprrtirKNYo&sz=w1200">
 <meta property="og:url" content="https://findmyname.vercel.app/vendorblacklist.html">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานภาครัฐ">
-<meta name="twitter:description" content="รวมรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ">
+<meta name="twitter:title" content="Find My Name — รายชื่อผู้รับจ้างทิ้งงานต่างๆ">
+<meta name="twitter:description" content="ประกาศรายชื่อผู้รับจ้างที่ทิ้งงานต่างๆ ทั้งภาครัฐ, เอกชน และบุคคลทั่วไปที่เจอผู้รับจ้างทิ้งงาน">
 <meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1dxawU_s-iku6lbLmC9M6zPprrtirKNYo&sz=w1200">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -88,9 +88,12 @@
   .name-card .info-list{display:flex;flex-direction:column;gap:5px;margin-top:10px}
   .name-card .info-row{font-size:13px;line-height:1.5;color:var(--text-primary)}
   .name-card .info-row .info-label{color:var(--text-secondary);margin-right:4px}
+  .name-card .exec-names{margin-top:6px;font-size:13px;color:var(--text-primary);line-height:1.5}
   .name-card .update-date{margin-top:10px;font-size:11px;color:var(--text-secondary);opacity:.75}
   .name-card button.note-btn{flex-shrink:0;border:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;font-family:inherit}
   .name-card button.note-btn{background:#3E9AE8;color:#fff}
+  .name-card button.share-btn{width:100%;margin-top:12px;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+  .name-card.highlight{border-color:var(--accent-dark);box-shadow:0 0 0 3px rgba(255,201,60,.45)}
 
   .empty-state{text-align:center;color:var(--text-secondary);padding:40px 20px;font-size:14px}
   .empty-state.loading-inline{display:flex;align-items:center;justify-content:center;gap:8px}
@@ -104,6 +107,9 @@
   .modal.center{text-align:center}
   .modal .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:20px;color:var(--text-secondary);cursor:pointer;padding:4px;line-height:1;width:auto}
   .form-group{margin-bottom:14px}
+  .section-label{font-weight:700;font-size:14px;margin:18px 0 10px;padding-top:10px;border-top:1px solid var(--border)}
+  .exec-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .exec-row .form-group{margin-bottom:12px}
   .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
   .form-group label .required{color:var(--error);margin-left:2px}
   .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--border);font-family:inherit;font-size:14px;background:var(--bg)}
@@ -127,10 +133,10 @@
 <div class="top-zone">
   <header>
     <h1>Find My Name</h1>
-    <p class="sub">รวมรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ</p>
+    <p class="sub">ประกาศรายชื่อผู้รับจ้างที่ทิ้งงานต่างๆ ทั้งภาครัฐ, เอกชน และบุคคลทั่วไปที่เจอผู้รับจ้างทิ้งงาน</p>
     <div id="projectPills">
       <a class="pill" href="index.html">รายชื่อผู้สอบบรรจุข้าราชการ (ปี 68-69)</a>
-      <a class="pill active" href="vendorblacklist.html">รายชื่อผู้รับจ้างทิ้งงานภาครัฐ</a>
+      <a class="pill active" href="vendorblacklist.html">รายชื่อผู้รับจ้างทิ้งงานต่างๆ</a>
     </div>
   </header>
   <div class="wrap">
@@ -142,7 +148,7 @@
 
   <div class="instructions">
     <div class="desc-text">
-      หากทราบชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการแล้วว่าเป็นผู้ทิ้งงาน สามารถเผยแพร่ชื่อผู้รับจ้าง และข้อมูลต่างๆ ได้ที่นี่<br>
+      หากต้องการประกาศชื่อผู้รับจ้างที่เป็นผู้ทิ้งงาน สามารถเผยแพร่ชื่อผู้รับจ้าง และข้อมูลต่างๆ ได้ที่นี่<br>
       <a class="inline-create-btn" href="createvendorblacklist.html">+ Create</a>
     </div>
     <div class="announce-box">หากคุณเคยใส่รายชื่อไว้แล้ว และต้องการเพิ่มหรือแก้ไขข้อมูล? <button class="inline-login-btn" onclick="openOwnerLogin()">เข้าสู่ระบบเพื่อเพิ่ม/แก้ไข</button></div>
@@ -152,7 +158,7 @@
     <input type="text" id="searchInput" placeholder="พิมพ์คำค้นหา เช่น ชื่อบริษัท, จังหวัด, ชื่อโครงการ, ชื่อหน่วยงาน...">
     <div class="filters">
       <select id="filterLetter"><option value="">ก-ฮ (ทั้งหมด)</option></select>
-      <select id="filterProvince"><option value="">จังหวัดหน่วยงาน (ทั้งหมด)</option></select>
+      <select id="filterProvince"><option value="">จังหวัดที่เกิดเหตุ (ทั้งหมด)</option></select>
     </div>
     <div class="clear-filters"><button onclick="resetFilters()">ล้างตัวกรองทั้งหมด</button></div>
   </div>
@@ -199,13 +205,27 @@
     <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อบริษัท</label><input type="tel" id="editCompanyPhone"></div>
     <div class="form-group"><label>อีเมลบริษัท</label><input type="email" id="editCompanyEmail"></div>
     <div class="form-group"><label>Website บริษัท</label><input type="text" id="editCompanyWebsite"></div>
+    <div class="section-label">ผู้บริหารบริษัท (กรอกอย่างน้อย 1 ราย)</div>
+    <div class="exec-row">
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 1)</label><input type="text" id="editFirstname1"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 1)</label><input type="text" id="editLastname1"></div>
+    </div>
+    <div class="exec-row">
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 2)</label><input type="text" id="editFirstname2"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 2)</label><input type="text" id="editLastname2"></div>
+    </div>
+    <div class="exec-row">
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 3)</label><input type="text" id="editFirstname3"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 3)</label><input type="text" id="editLastname3"></div>
+    </div>
+    <div class="section-label">ข้อมูลโครงการที่ทิ้งงาน</div>
     <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน<span class="required">*</span></label><input type="text" id="editProjectName"></div>
-    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="editAgencyName"></div>
-    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="editAgencyAddress"></div>
-    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="tel" id="editAgencyPhone"></div>
-    <div class="form-group"><label>อีเมลหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="email" id="editAgencyEmail"></div>
-    <div class="form-group"><label>Website หน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="text" id="editAgencyWebsite"></div>
-    <div class="form-group"><label>จังหวัด (ของหน่วยงานเจ้าของโครงการ)<span class="required">*</span></label><select id="editProvince"></select></div>
+    <div class="form-group"><label>ชื่อผู้ว่าจ้าง<span class="required">*</span></label><input type="text" id="editAgencyName"></div>
+    <div class="form-group"><label>ที่ตั้งโครงการ<span class="required">*</span></label><input type="text" id="editAgencyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อผู้ว่าจ้าง<span class="required">*</span></label><input type="tel" id="editAgencyPhone"></div>
+    <div class="form-group"><label>อีเมลผู้ว่าจ้าง<span class="required">*</span></label><input type="email" id="editAgencyEmail"></div>
+    <div class="form-group"><label>Website ของผู้ว่าจ้าง(ถ้ามี)</label><input type="text" id="editAgencyWebsite"></div>
+    <div class="form-group"><label>จังหวัด (ของที่ตั้งโครงการ)<span class="required">*</span></label><select id="editProvince"></select></div>
     <div class="form-group"><label>Note</label><textarea id="editNote"></textarea></div>
     <div class="form-group">
       <label>หมายเลขโทรศัพท์ (สำหรับเข้าสู่ระบบครั้งถัดไป)<span class="required">*</span></label>
@@ -271,7 +291,7 @@ function populateSelect(el, values, placeholder) {
 
 function init() {
   populateSelect(filterLetter, THAI_LETTERS, 'ก-ฮ (ทั้งหมด)');
-  populateSelect(filterProvince, PROVINCES, 'จังหวัดหน่วยงาน (ทั้งหมด)');
+  populateSelect(filterProvince, PROVINCES, 'จังหวัดที่เกิดเหตุ (ทั้งหมด)');
   populateSelect(editProvince, PROVINCES);
 
   loadVendors();
@@ -293,6 +313,7 @@ async function loadVendors() {
     const data = await apiGet('listVendors', {});
     allRows = (data.success && data.rows) ? data.rows : [];
     applyFilters();
+    focusSharedCard();
   } catch (err) {
     nameList.innerHTML = '<div class="empty-state">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</div>';
   }
@@ -320,12 +341,25 @@ function thaiSortableFirstChar(s) {
   return c0;
 }
 
+// เช็คว่ากรอกผู้บริหารครบคู่ (ชื่อ+นามสกุล) อย่างน้อย 1 ราย — ถ้ากรอกแค่ชื่อหรือ
+// แค่นามสกุลของรายใดรายหนึ่ง โดยไม่ครบคู่ ถือว่าไม่สมบูรณ์ ต้องแจ้งให้แก้ก่อน
+function checkExecPairs(pairs) {
+  let filled = 0, partial = false;
+  pairs.forEach(([f, l]) => {
+    const fv = f.value.trim(), lv = l.value.trim();
+    if (fv && lv) filled++;
+    else if (fv || lv) partial = true;
+  });
+  return { filled, partial };
+}
+
 // รวมทุกฟิลด์ของแถวเป็นข้อความเดียว เพื่อให้ search box เป็น universal search
 // — พิมพ์อะไรก็ได้ที่เกี่ยวข้อง ไม่ว่าจะเป็นชื่อบริษัท ที่อยู่ เบอร์โทร อีเมล เว็บไซต์
 // ชื่อโครงการ ชื่อหน่วยงาน จังหวัด หรือ note ก็ค้นเจอทั้งหมด ไม่จำกัดแค่ชื่อบริษัท
 function vendorSearchBlob(r) {
   return [
     r.company_name, r.company_address, r.company_phone, r.company_email, r.company_website,
+    r.firstname1, r.lastname1, r.firstname2, r.lastname2, r.firstname3, r.lastname3,
     r.project_name, r.agency_name, r.agency_address, r.agency_phone, r.agency_email, r.agency_website,
     r.province, r.note
   ].filter(Boolean).join(' ').toLowerCase();
@@ -376,20 +410,32 @@ function renderList(rows) {
     const infoRows = [
       ['รับงานที่จังหวัด', r.province],
       ['ชื่อโครงการที่ทิ้งงาน', r.project_name],
-      ['ชื่อหน่วยงานเจ้าของโครงการ', r.agency_name],
-      ['หมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง', r.agency_phone]
+      ['ชื่อผู้ว่าจ้าง', r.agency_name],
+      ['หมายเลขโทรศัพท์ติดต่อผู้ว่าจ้าง', r.agency_phone]
     ].filter(([label, val]) => val)
      .map(([label, val]) => '<div class="info-row"><span class="info-label">'+esc(label)+' :</span>'+esc(val)+'</div>')
      .join('');
-    return '<div class="name-card">' +
+
+    const execNames = [[r.firstname1,r.lastname1],[r.firstname2,r.lastname2],[r.firstname3,r.lastname3]]
+      .filter(([f,l]) => f || l)
+      .map(([f,l]) => (f+' '+l).trim())
+      .join(', ');
+
+    const dateLines =
+      (r.created_date ? '<div class="update-date">เพิ่มรายชื่อเมื่อ '+esc(r.created_date)+'</div>' : '') +
+      (r.update_date && r.update_date !== r.created_date ? '<div class="update-date">อัพเดทข้อมูลล่าสุดเมื่อ '+esc(r.update_date)+'</div>' : '');
+
+    return '<div class="name-card" id="vendor-card-'+esc(r.no)+'">' +
       '<div class="card-top">' +
         '<div class="fullname">'+esc(r.company_name)+'</div>' +
         '<div class="card-actions">' +
           '<button class="note-btn" onclick="handleNoteClick(\''+esc(r.no)+'\')">Note</button>' +
         '</div>' +
       '</div>' +
+      (execNames ? '<div class="exec-names">ผู้บริหารบริษัท : '+esc(execNames)+'</div>' : '') +
       (infoRows ? '<div class="info-list">'+infoRows+'</div>' : '') +
-      (r.update_date ? '<div class="update-date">อัพเดทข้อมูลเมื่อ '+esc(r.update_date)+'</div>' : '') +
+      dateLines +
+      '<button class="share-btn" id="shareBtn-'+esc(r.no)+'" onclick="handleShareClick(\''+esc(r.no)+'\')">🔗 Share</button>' +
     '</div>';
   }).join('');
 }
@@ -405,6 +451,38 @@ function handleNoteClick(no) {
     noteModalDate.classList.add('hidden');
   }
   openModal('noteModal');
+}
+
+// แชร์ลิงก์ตรงไปยังการ์ดนี้ (ไม่ใช่พาไปหน้าแรกแล้วให้ผู้รับต้องมาหาเอง)
+function handleShareClick(no) {
+  const row = allRows.find(r => String(r.no) === String(no));
+  if (!row) return;
+  const shareUrl = window.location.origin + window.location.pathname + '?no=' + encodeURIComponent(no);
+  const shareText = 'ดูรายชื่อผู้รับจ้างทิ้งงาน เพื่อลดโอกาสเกิดความผิดพลาดในการจ้างทำงานของคุณ';
+
+  if (navigator.share) {
+    navigator.share({ title: 'Find My Name', text: shareText, url: shareUrl }).catch(() => {});
+    return;
+  }
+
+  navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => {
+    const btn = document.getElementById('shareBtn-' + no);
+    if (!btn) return;
+    const original = btn.textContent;
+    btn.textContent = '✅ คัดลอกลิงก์แล้ว';
+    setTimeout(() => { btn.textContent = original; }, 1800);
+  }).catch(() => {});
+}
+
+// รองรับลิงก์ที่แชร์มา (?no=venX) — เลื่อนไปหาการ์ดนั้นแล้วไฮไลต์ให้เห็นชัด
+function focusSharedCard() {
+  const no = new URLSearchParams(window.location.search).get('no');
+  if (!no) return;
+  const el = document.getElementById('vendor-card-' + no);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('highlight');
+  setTimeout(() => el.classList.remove('highlight'), 3000);
 }
 
 // ===================== HERO BANNER =====================
@@ -581,6 +659,9 @@ function openEditForm(row) {
   editCompanyPhone.value = row.company_phone || '';
   editCompanyEmail.value = row.company_email || '';
   editCompanyWebsite.value = row.company_website || '';
+  editFirstname1.value = row.firstname1 || ''; editLastname1.value = row.lastname1 || '';
+  editFirstname2.value = row.firstname2 || ''; editLastname2.value = row.lastname2 || '';
+  editFirstname3.value = row.firstname3 || ''; editLastname3.value = row.lastname3 || '';
   editProjectName.value = row.project_name || '';
   editAgencyName.value = row.agency_name || '';
   editAgencyAddress.value = row.agency_address || '';
@@ -599,12 +680,14 @@ async function submitEdit() {
   const company_name = editCompanyName.value.trim();
   const phone = editPhone.value.trim();
   if (!company_name) { editErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
+  const execCheck = checkExecPairs([[editFirstname1,editLastname1],[editFirstname2,editLastname2],[editFirstname3,editLastname3]]);
+  if (execCheck.partial) { editErr.textContent = 'กรุณากรอกชื่อและนามสกุลผู้บริหารให้ครบคู่ หรือเว้นว่างทั้งคู่'; return; }
+  if (execCheck.filled === 0) { editErr.textContent = 'กรุณากรอกชื่อผู้บริหารบริษัทอย่างน้อย 1 ราย'; return; }
   if (!editProjectName.value.trim()) { editErr.textContent = 'กรุณากรอกชื่อโครงการที่ทิ้งงาน'; return; }
-  if (!editAgencyName.value.trim()) { editErr.textContent = 'กรุณากรอกชื่อหน่วยงานเจ้าของโครงการ'; return; }
-  if (!editAgencyAddress.value.trim()) { editErr.textContent = 'กรุณากรอกที่ตั้งหน่วยงานเจ้าของโครงการ'; return; }
-  if (!editAgencyPhone.value.trim()) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง'; return; }
-  if (!editAgencyEmail.value.trim()) { editErr.textContent = 'กรุณากรอกอีเมลหน่วยงานผู้ว่าจ้าง'; return; }
-  if (!editAgencyWebsite.value.trim()) { editErr.textContent = 'กรุณากรอก Website หน่วยงานผู้ว่าจ้าง'; return; }
+  if (!editAgencyName.value.trim()) { editErr.textContent = 'กรุณากรอกชื่อผู้ว่าจ้าง'; return; }
+  if (!editAgencyAddress.value.trim()) { editErr.textContent = 'กรุณากรอกที่ตั้งโครงการ'; return; }
+  if (!editAgencyPhone.value.trim()) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ติดต่อผู้ว่าจ้าง'; return; }
+  if (!editAgencyEmail.value.trim()) { editErr.textContent = 'กรุณากรอกอีเมลผู้ว่าจ้าง'; return; }
   if (!phone) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
   if (!/^[0-9]{9,10}$/.test(phone)) { editErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'; return; }
   if (!editProvince.value) { editErr.textContent = 'กรุณาเลือกจังหวัด'; return; }
@@ -617,6 +700,9 @@ async function submitEdit() {
     company_phone: editCompanyPhone.value.trim(),
     company_email: editCompanyEmail.value.trim(),
     company_website: editCompanyWebsite.value.trim(),
+    firstname1: editFirstname1.value.trim(), lastname1: editLastname1.value.trim(),
+    firstname2: editFirstname2.value.trim(), lastname2: editLastname2.value.trim(),
+    firstname3: editFirstname3.value.trim(), lastname3: editLastname3.value.trim(),
     project_name: editProjectName.value.trim(),
     agency_name: editAgencyName.value.trim(),
     agency_address: editAgencyAddress.value.trim(),

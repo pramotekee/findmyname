@@ -142,7 +142,7 @@
       หากทราบชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการแล้วว่าเป็นผู้ทิ้งงาน สามารถเผยแพร่ชื่อผู้รับจ้าง และข้อมูลต่างๆ ได้ที่นี่<br>
       <a class="inline-create-btn" href="createvendorblacklist.html">+ Create</a>
     </div>
-    <div class="announce-box">เคยเพิ่มรายชื่อไว้แล้ว และต้องการแก้ไขข้อมูล? <button class="inline-login-btn" onclick="openOwnerLogin()">เข้าสู่ระบบเพื่อแก้ไข</button></div>
+    <div class="announce-box">หากคุณเคยใส่รายชื่อไว้แล้ว และต้องการเพิ่มหรือแก้ไขข้อมูล? <button class="inline-login-btn" onclick="openOwnerLogin()">เข้าสู่ระบบเพื่อเพิ่ม/แก้ไข</button></div>
   </div>
 
   <div class="search-box">
@@ -274,6 +274,11 @@ function init() {
 
   [searchInput, filterLetter, filterProvince]
     .forEach(el => el.addEventListener('input', applyFilters));
+
+  // มาจากลิงก์ "เข้าสู่ระบบเพื่อเพิ่ม/แก้ไข" ในหน้า +Create — เปิด login modal ให้ทันที
+  if (new URLSearchParams(window.location.search).get('login') === '1') {
+    openOwnerLogin();
+  }
 }
 
 // ===================== LIST + FILTER =====================
@@ -299,6 +304,17 @@ function coreCompanyName(name) {
   return s;
 }
 
+// สระนำ (เ,แ,โ,ใ,ไ) เขียนอยู่หน้าพยัญชนะ แต่หลักการเรียงพจนานุกรมไทยจัดหมวดด้วย
+// พยัญชนะที่ตามหลังสระ เช่น "เทส" ต้องอยู่หมวด "ท" ไม่ใช่หมวด "เ" — ถ้าเทียบด้วย
+// startsWith() ตรงๆ แบบเดิม คำที่ขึ้นต้นด้วยสระนำจะไม่มีทางแมตช์กับตัวอักษรที่ถูกต้องเลย
+const LEADING_VOWELS = ['เ','แ','โ','ใ','ไ'];
+function thaiSortableFirstChar(s) {
+  if (!s) return '';
+  const c0 = s[0];
+  if (LEADING_VOWELS.includes(c0) && s.length > 1) return s[1];
+  return c0;
+}
+
 // รวมทุกฟิลด์ของแถวเป็นข้อความเดียว เพื่อให้ search box เป็น universal search
 // — พิมพ์อะไรก็ได้ที่เกี่ยวข้อง ไม่ว่าจะเป็นชื่อบริษัท ที่อยู่ เบอร์โทร อีเมล เว็บไซต์
 // ชื่อโครงการ ชื่อหน่วยงาน จังหวัด หรือ note ก็ค้นเจอทั้งหมด ไม่จำกัดแค่ชื่อบริษัท
@@ -317,7 +333,7 @@ function applyFilters() {
 
   const filtered = allRows.filter(r => {
     if (q && !vendorSearchBlob(r).includes(q)) return false;
-    if (letter && !coreCompanyName(r.company_name).startsWith(letter)) return false;
+    if (letter && thaiSortableFirstChar(coreCompanyName(r.company_name)) !== letter) return false;
     if (province && r.province !== province) return false;
     return true;
   });

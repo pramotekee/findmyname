@@ -28,6 +28,8 @@
   .notice-box .notice-link{display:inline-block;margin-top:8px;background:#1A1A1A;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:9px 18px;border-radius:10px}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px}
   .section-label{font-weight:700;font-size:14px;margin:18px 0 10px;padding-top:10px;border-top:1px solid var(--border)}
+  .exec-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .exec-row .form-group{margin-bottom:12px}
   .section-label:first-child{margin-top:0;padding-top:0;border-top:0}
   .form-group{margin-bottom:16px}
   .form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-secondary)}
@@ -55,7 +57,7 @@
   <a class="back" href="vendorblacklist.html">← กลับไปหน้ารายชื่อผู้รับจ้างทิ้งงาน</a>
   <header>
     <h1>Find My Name</h1>
-    <p>เพิ่มรายชื่อผู้รับจ้างที่ถูกประกาศอย่างเป็นทางการว่าทิ้งงานภาครัฐ</p>
+    <p>เพิ่มรายชื่อผู้รับจ้างที่ทิ้งงานต่างๆ ทั้งภาครัฐ, เอกชน และบุคคลทั่วไป</p>
   </header>
 
   <div class="notice-box">
@@ -71,14 +73,28 @@
     <div class="form-group"><label>อีเมลบริษัท</label><input type="email" id="cCompanyEmail"></div>
     <div class="form-group"><label>Website บริษัท</label><input type="text" id="cCompanyWebsite"></div>
 
+    <div class="section-label">ผู้บริหารบริษัท (กรอกอย่างน้อย 1 ราย)</div>
+    <div class="exec-row">
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 1)</label><input type="text" id="cFirstname1"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 1)</label><input type="text" id="cLastname1"></div>
+    </div>
+    <div class="exec-row">
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 2)</label><input type="text" id="cFirstname2"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 2)</label><input type="text" id="cLastname2"></div>
+    </div>
+    <div class="exec-row">
+      <div class="form-group"><label>ชื่อ (ผู้บริหาร รายที่ 3)</label><input type="text" id="cFirstname3"></div>
+      <div class="form-group"><label>นามสกุล (ผู้บริหาร รายที่ 3)</label><input type="text" id="cLastname3"></div>
+    </div>
+
     <div class="section-label">ข้อมูลโครงการที่ทิ้งงาน</div>
     <div class="form-group"><label>ชื่อโครงการที่ทิ้งงาน<span class="required">*</span></label><input type="text" id="cProjectName"></div>
-    <div class="form-group"><label>ชื่อหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="cAgencyName"></div>
-    <div class="form-group"><label>ที่ตั้งหน่วยงานเจ้าของโครงการ<span class="required">*</span></label><input type="text" id="cAgencyAddress"></div>
-    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="tel" id="cAgencyPhone"></div>
-    <div class="form-group"><label>อีเมลหน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="email" id="cAgencyEmail"></div>
-    <div class="form-group"><label>Website หน่วยงานผู้ว่าจ้าง<span class="required">*</span></label><input type="text" id="cAgencyWebsite"></div>
-    <div class="form-group"><label>จังหวัด (ของหน่วยงานเจ้าของโครงการ)<span class="required">*</span></label><select id="cProvince"></select></div>
+    <div class="form-group"><label>ชื่อผู้ว่าจ้าง<span class="required">*</span></label><input type="text" id="cAgencyName"></div>
+    <div class="form-group"><label>ที่ตั้งโครงการ<span class="required">*</span></label><input type="text" id="cAgencyAddress"></div>
+    <div class="form-group"><label>หมายเลขโทรศัพท์ติดต่อผู้ว่าจ้าง<span class="required">*</span></label><input type="tel" id="cAgencyPhone"></div>
+    <div class="form-group"><label>อีเมลผู้ว่าจ้าง<span class="required">*</span></label><input type="email" id="cAgencyEmail"></div>
+    <div class="form-group"><label>Website ของผู้ว่าจ้าง(ถ้ามี)</label><input type="text" id="cAgencyWebsite"></div>
+    <div class="form-group"><label>จังหวัด (ของที่ตั้งโครงการ)<span class="required">*</span></label><select id="cProvince"></select></div>
 
     <div class="section-label">อื่นๆ</div>
     <div class="form-group"><label>Note</label><textarea id="cNote" placeholder="รายละเอียดเพิ่มเติม เช่น อ้างอิงประกาศทางการ, ลิงก์ข่าว ฯลฯ"></textarea></div>
@@ -113,17 +129,31 @@ function populateSelect(el, values, placeholder) {
 }
 populateSelect(cProvince, PROVINCES, '— เลือก —');
 
+// เช็คว่ากรอกผู้บริหารครบคู่ (ชื่อ+นามสกุล) อย่างน้อย 1 ราย — ถ้ากรอกแค่ชื่อหรือ
+// แค่นามสกุลของรายใดรายหนึ่ง โดยไม่ครบคู่ ถือว่าไม่สมบูรณ์ ต้องแจ้งให้แก้ก่อน
+function checkExecPairs(pairs) {
+  let filled = 0, partial = false;
+  pairs.forEach(([f, l]) => {
+    const fv = f.value.trim(), lv = l.value.trim();
+    if (fv && lv) filled++;
+    else if (fv || lv) partial = true;
+  });
+  return { filled, partial };
+}
+
 async function submitCreate() {
   cErr.textContent = '';
   const company_name = cCompanyName.value.trim();
   const phone = cPhone.value.trim();
   if (!company_name) { cErr.textContent = 'กรุณากรอกชื่อบริษัทผู้รับจ้าง'; return; }
+  const execCheck = checkExecPairs([[cFirstname1,cLastname1],[cFirstname2,cLastname2],[cFirstname3,cLastname3]]);
+  if (execCheck.partial) { cErr.textContent = 'กรุณากรอกชื่อและนามสกุลผู้บริหารให้ครบคู่ หรือเว้นว่างทั้งคู่'; return; }
+  if (execCheck.filled === 0) { cErr.textContent = 'กรุณากรอกชื่อผู้บริหารบริษัทอย่างน้อย 1 ราย'; return; }
   if (!cProjectName.value.trim()) { cErr.textContent = 'กรุณากรอกชื่อโครงการที่ทิ้งงาน'; return; }
-  if (!cAgencyName.value.trim()) { cErr.textContent = 'กรุณากรอกชื่อหน่วยงานเจ้าของโครงการ'; return; }
-  if (!cAgencyAddress.value.trim()) { cErr.textContent = 'กรุณากรอกที่ตั้งหน่วยงานเจ้าของโครงการ'; return; }
-  if (!cAgencyPhone.value.trim()) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ติดต่อหน่วยงานผู้ว่าจ้าง'; return; }
-  if (!cAgencyEmail.value.trim()) { cErr.textContent = 'กรุณากรอกอีเมลหน่วยงานผู้ว่าจ้าง'; return; }
-  if (!cAgencyWebsite.value.trim()) { cErr.textContent = 'กรุณากรอก Website หน่วยงานผู้ว่าจ้าง'; return; }
+  if (!cAgencyName.value.trim()) { cErr.textContent = 'กรุณากรอกชื่อผู้ว่าจ้าง'; return; }
+  if (!cAgencyAddress.value.trim()) { cErr.textContent = 'กรุณากรอกที่ตั้งโครงการ'; return; }
+  if (!cAgencyPhone.value.trim()) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ติดต่อผู้ว่าจ้าง'; return; }
+  if (!cAgencyEmail.value.trim()) { cErr.textContent = 'กรุณากรอกอีเมลผู้ว่าจ้าง'; return; }
   if (!phone) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์'; return; }
   if (!/^[0-9]{9,10}$/.test(phone)) { cErr.textContent = 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'; return; }
   if (!cProvince.value) { cErr.textContent = 'กรุณาเลือกจังหวัด'; return; }
@@ -135,6 +165,9 @@ async function submitCreate() {
     company_phone: cCompanyPhone.value.trim(),
     company_email: cCompanyEmail.value.trim(),
     company_website: cCompanyWebsite.value.trim(),
+    firstname1: cFirstname1.value.trim(), lastname1: cLastname1.value.trim(),
+    firstname2: cFirstname2.value.trim(), lastname2: cLastname2.value.trim(),
+    firstname3: cFirstname3.value.trim(), lastname3: cLastname3.value.trim(),
     project_name: cProjectName.value.trim(),
     agency_name: cAgencyName.value.trim(),
     agency_address: cAgencyAddress.value.trim(),
